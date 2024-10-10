@@ -112,7 +112,7 @@ position = Vector2(0, -14)
 sprite_frames = SubResource("SpriteFrames_18k6j")
 animation = &"Run"
 autoplay = "Idle"
-frame_progress = 0.323121
+frame_progress = 0.163465
 
 [node name="Hitbot of Player" type="CollisionShape2D" parent="."]
 position = Vector2(0, -7)
