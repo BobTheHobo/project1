@@ -1,7 +1,5 @@
 extends CharacterBody2D
 
-var enemy_in_attack_range = false
-var enemy_attack_cooldown = true
 var health = 100
 var player_alive = true
 
@@ -10,8 +8,11 @@ const JUMP_VELOCITY = -300.0
 
 var direction_facing = 1 # 1 is right, -1 is le ft
 
+# Method specifies that this is a player DO NOT REMOVE
+func player():
+	pass
+	
 func _physics_process(delta: float) -> void:
-	enemyAttack()
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
@@ -39,17 +40,10 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 
-func player():
-	pass
-
-func _on_player_hitbox_body_entered(body: Node2D) -> void:
+func _on_attack_range_body_entered(body: Node2D) -> void:
 	if body.has_method("enemy"):
-		enemy_in_attack_range = true
+		Combat.addEnemyInRange(body)
 
-func _on_player_hitbox_body_exited(body: Node2D) -> void:
+func _on_attack_range_body_exited(body: Node2D) -> void:
 	if body.has_method("enemy"):
-		enemy_in_attack_range = false
-		
-func enemyAttack():
-	if enemy_in_attack_range:
-		print("Player took damage")
+		Combat.removeEnemyInRange(body)

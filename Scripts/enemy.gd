@@ -3,19 +3,25 @@ extends CharacterBody2D
 var speed = 35
 var player_chase = false
 var player = null # target player
+var player_in_attack_range = false # if player is in attack range
 var direction = 1 # move to right by default
+
+func handle_animations():
+	if player_in_attack_range:
+		$AnimatedSprite2D.play("attack")
+	else:
+		$AnimatedSprite2D.play("idle")
 
 func move_enemy():
 	# velocity.x = speed
 	
 	if not is_on_floor():
 		velocity += get_gravity()
-
+		
 func _physics_process(delta: float) -> void:
+	handle_animations()
 	move_enemy()
 	
-	$AnimatedSprite2D.play("idle")
-		
 	if player_chase:
 		position.x += (player.position.x - position.x)/speed
 		
@@ -23,8 +29,6 @@ func _physics_process(delta: float) -> void:
 			$AnimatedSprite2D.flip_h = true
 		else:
 			$AnimatedSprite2D.flip_h = false
-		
-		
 		
 	move_and_slide()
 
@@ -35,6 +39,15 @@ func _on_detection_area_body_entered(body: Node2D) -> void:
 func _on_detection_area_body_exited(body: Node2D) -> void:
 	player = null
 	player_chase = false
+
+func _on_attack_range_body_entered(body: Node2D) -> void:
+	if (body == player):
+		player_in_attack_range = true
 	
+func _on_attack_range_body_exited(body: Node2D) -> void:
+	if (body == player):
+		player_in_attack_range = false
+
+	# Method to signifiy that this is an enemy, DON'T DELETE
 func enemy():
 	pass

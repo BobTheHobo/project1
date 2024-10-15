@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dig0ksxyri4o7"]
+[gd_scene load_steps=11 format=3 uid="uid://dig0ksxyri4o7"]
 
 [ext_resource type="Script" path="res://Scripts/player.gd" id="1_1l04s"]
 [ext_resource type="Texture2D" uid="uid://cp1m7choncc72" path="res://brackeys_platformer_assets/brackeys_platformer_assets/sprites/knight.png" id="1_sketi"]
@@ -44,11 +44,14 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_8chh7"]
-radius = 5.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vs5gc"]
+size = Vector2(12, 16)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tryhn"]
 size = Vector2(12, 19)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vp837"]
+radius = 40.05
 
 [node name="Player" type="CharacterBody2D"]
 position = Vector2(0, 2)
@@ -62,9 +65,9 @@ animation = &"Idle"
 autoplay = "Idle"
 frame_progress = 0.712173
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -7)
-shape = SubResource("CircleShape2D_8chh7")
+[node name="SpriteCollisionShape" type="CollisionShape2D" parent="."]
+position = Vector2(0, -10)
+shape = SubResource("RectangleShape2D_vs5gc")
 
 [node name="PlayerHitbox" type="Area2D" parent="."]
 
@@ -72,5 +75,11 @@ shape = SubResource("CircleShape2D_8chh7")
 position = Vector2(0, -11.5)
 shape = SubResource("RectangleShape2D_tryhn")
 
-[connection signal="body_entered" from="PlayerHitbox" to="." method="_on_player_hitbox_body_entered"]
-[connection signal="body_exited" from="PlayerHitbox" to="." method="_on_player_hitbox_body_exited"]
+[node name="AttackRange" type="Area2D" parent="."]
+
+[node name="AttackRangeCollisionShape" type="CollisionShape2D" parent="AttackRange"]
+position = Vector2(0, -11)
+shape = SubResource("CircleShape2D_vp837")
+
+[connection signal="body_entered" from="AttackRange" to="." method="_on_attack_range_body_entered"]
+[connection signal="body_exited" from="AttackRange" to="." method="_on_attack_range_body_exited"]

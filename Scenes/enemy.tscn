@@ -3,29 +3,25 @@
 [ext_resource type="Script" path="res://Scripts/enemy.gd" id="1_gw17l"]
 [ext_resource type="Texture2D" uid="uid://cd4x4fkq0lt83" path="res://brackeys_platformer_assets/brackeys_platformer_assets/sprites/slime_green.png" id="2_qdlvr"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_chd48"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_7kxpm"]
 atlas = ExtResource("2_qdlvr")
-region = Rect2(24, 24, 24, 24)
+region = Rect2(48, 48, 24, 24)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_l2evg"]
 atlas = ExtResource("2_qdlvr")
 region = Rect2(48, 24, 24, 24)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_ggpvn"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_6cms2"]
 atlas = ExtResource("2_qdlvr")
-region = Rect2(72, 24, 24, 24)
+region = Rect2(48, 0, 24, 24)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_7kxpm"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_chd48"]
 atlas = ExtResource("2_qdlvr")
-region = Rect2(48, 48, 24, 24)
+region = Rect2(24, 24, 24, 24)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_l77xi"]
 atlas = ExtResource("2_qdlvr")
 region = Rect2(72, 48, 24, 24)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_6cms2"]
-atlas = ExtResource("2_qdlvr")
-region = Rect2(48, 0, 24, 24)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0ityi"]
 atlas = ExtResource("2_qdlvr")
@@ -35,13 +31,21 @@ region = Rect2(72, 0, 24, 24)
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_chd48")
+"texture": SubResource("AtlasTexture_7kxpm")
+}],
+"loop": true,
+"name": &"RESET",
+"speed": 5.0
 }, {
+"frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_l2evg")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ggpvn")
+"texture": SubResource("AtlasTexture_6cms2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_chd48")
 }],
 "loop": true,
 "name": &"attack",
@@ -60,24 +64,27 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_6cms2")
+"texture": SubResource("AtlasTexture_0ityi")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_0ityi")
+"texture": SubResource("AtlasTexture_6cms2")
 }],
 "loop": true,
 "name": &"idle",
 "speed": 2.0
 }]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_8chh7"]
-radius = 55.0818
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4nw6y"]
 size = Vector2(13, 13)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_8chh7"]
+radius = 55.0818
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_m8clk"]
 size = Vector2(17, 15)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_y6k4k"]
+radius = 34.1321
 
 [node name="Enemy" type="CharacterBody2D"]
 position = Vector2(0, 2)
@@ -86,9 +93,12 @@ script = ExtResource("1_gw17l")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -14)
 sprite_frames = SubResource("SpriteFrames_3wqik")
-animation = &"damaged"
-frame = 1
-frame_progress = 0.719743
+animation = &"RESET"
+autoplay = "idle"
+
+[node name="SpriteCollisionShape" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, -8.5)
+shape = SubResource("RectangleShape2D_4nw6y")
 
 [node name="DetectionArea" type="Area2D" parent="."]
 collision_layer = 2
@@ -98,15 +108,19 @@ collision_mask = 2
 position = Vector2(0, -7)
 shape = SubResource("CircleShape2D_8chh7")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-0.5, -8.5)
-shape = SubResource("RectangleShape2D_4nw6y")
-
 [node name="EnemyHitbox" type="Area2D" parent="."]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyHitbox"]
+[node name="HitboxCollisionShape" type="CollisionShape2D" parent="EnemyHitbox"]
 position = Vector2(-0.5, -9.5)
 shape = SubResource("RectangleShape2D_m8clk")
 
+[node name="AttackRange" type="Area2D" parent="."]
+
+[node name="AttackRangeCollisionShape" type="CollisionShape2D" parent="AttackRange"]
+position = Vector2(0, -9)
+shape = SubResource("CircleShape2D_y6k4k")
+
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
 [connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]
+[connection signal="body_entered" from="AttackRange" to="." method="_on_attack_range_body_entered"]
+[connection signal="body_exited" from="AttackRange" to="." method="_on_attack_range_body_exited"]
