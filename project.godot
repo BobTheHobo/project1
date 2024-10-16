@@ -25,9 +25,9 @@ Combat="*res://Scripts/Combat.gd"
 
 window/stretch/mode="canvas_items"
 
-[editor_plugins]
+[dotnet]
 
-enabled=PackedStringArray("res://addons/godot-vim/plugin.cfg")
+project/assembly_name="RPS RPG"
 
 [input]
 
