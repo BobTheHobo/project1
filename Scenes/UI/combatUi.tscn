@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/combat_ui.gd" id="1_upqm5"]
 
-[node name="CombatIndicators" type="CanvasLayer"]
+[node name="CombatUi" type="CanvasLayer"]
 script = ExtResource("1_upqm5")
 
 [node name="EnemyInRangeLabel" type="Label" parent="."]

@@ -1,4 +1,4 @@
-# added to global scripts
+# Controls everything combat related, including the combat UI
 # EIR = enemy in range
 extends Node
 
@@ -11,6 +11,18 @@ var enemy_in_range = false # if any enemy is in player attack range
 
 var enemy_in_range_indicator = false # indicates that an enemy is in range
 
+func connectToSignals() -> void:
+	SignalBus.enemyEnteredAttackRange.connect(_on_enemy_entered_attack_range)
+	SignalBus.enemyLeftAttackRange.connect(_on_enemy_left_attack_range)
+	
+func _on_enemy_entered_attack_range(body: Node2D) -> void:
+	addEnemyInRange(body)
+	SignalBus.showEnemyInRangeUI.emit(true)
+	
+func _on_enemy_left_attack_range(body: Node2D) -> void:
+	removeEnemyInRange(body)
+	SignalBus.showEnemyInRangeUI.emit(false)
+	
 # Adds enemy to enemy in range array
 func addEnemyInRange(enemy: Node2D) -> void:
 	enemies_in_range.append(enemy)
@@ -41,15 +53,8 @@ func clearTarget() -> void:
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass
-		
-# Does something to indicate that an enemy is in attack range
-func indicateEnemyInRange() -> void:
-	if (isAnyEnemyInRange()):
-		enemy_in_range_indicator = true
-	else:
-		enemy_in_range_indicator = false
+	connectToSignals()
 		
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	indicateEnemyInRange()
+	pass

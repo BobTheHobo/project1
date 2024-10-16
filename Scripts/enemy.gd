@@ -5,7 +5,21 @@ var player_chase = false
 var player = null # target player
 var player_in_attack_range = false # if player is in attack range
 var direction = 1 # move to right by default
+var rng = RandomNumberGenerator.new()
+var attackSequence = []
 
+func attackSequenceString() -> String:
+	var sequence: String = ""
+	for i:int in range(attackSequence.size()):
+		sequence += str(attackSequence[i])
+	return sequence
+
+func generateAttackSequence(numAttacks: int):
+	for i in range(numAttacks):
+		var attack = rng.randi_range(0,2)
+		attackSequence.push_back(attack)
+	print("Attack sequence generated: %s" % attackSequenceString())
+	
 func handle_animations():
 	if player_in_attack_range:
 		$AnimatedSprite2D.play("attack")
@@ -47,6 +61,9 @@ func _on_attack_range_body_entered(body: Node2D) -> void:
 func _on_attack_range_body_exited(body: Node2D) -> void:
 	if (body == player):
 		player_in_attack_range = false
+
+func _ready() -> void:
+	generateAttackSequence(6)
 
 	# Method to signifiy that this is an enemy, DON'T DELETE
 func enemy():

@@ -42,8 +42,8 @@ func _physics_process(delta: float) -> void:
 
 func _on_attack_range_body_entered(body: Node2D) -> void:
 	if body.has_method("enemy"):
-		Combat.addEnemyInRange(body)
+		SignalBus.enemyEnteredAttackRange.emit(body)
 
 func _on_attack_range_body_exited(body: Node2D) -> void:
 	if body.has_method("enemy"):
-		Combat.removeEnemyInRange(body)
+		SignalBus.enemyLeftAttackRange.emit(body)
