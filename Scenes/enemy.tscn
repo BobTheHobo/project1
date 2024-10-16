@@ -1,8 +1,7 @@
-[gd_scene load_steps=15 format=3 uid="uid://dj3fdpeiw6km0"]
+[gd_scene load_steps=14 format=3 uid="uid://dj3fdpeiw6km0"]
 
 [ext_resource type="Script" path="res://Scripts/enemy.gd" id="1_gw17l"]
 [ext_resource type="Texture2D" uid="uid://cd4x4fkq0lt83" path="res://brackeys_platformer_assets/brackeys_platformer_assets/sprites/slime_green.png" id="2_qdlvr"]
-[ext_resource type="Script" path="res://Scenes/EnemyHitbox.cs" id="3_i4m6f"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7kxpm"]
 atlas = ExtResource("2_qdlvr")
@@ -110,7 +109,6 @@ position = Vector2(0, -7)
 shape = SubResource("CircleShape2D_8chh7")
 
 [node name="EnemyHitbox" type="Area2D" parent="."]
-script = ExtResource("3_i4m6f")
 
 [node name="HitboxCollisionShape" type="CollisionShape2D" parent="EnemyHitbox"]
 position = Vector2(-0.5, -9.5)
