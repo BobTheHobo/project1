@@ -18,9 +18,9 @@ func _ready() -> void:
 	
 func _show_enemy_in_range_ui(visible: bool) -> void:
 	if (visible):
-		$EnemyInRangeLabel.visible = true
+		enemyInRangeUI.visible = true
 	else:
-		$EnemyInRangeLabel.visible = false
+		enemyInRangeUI.visible = false
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
