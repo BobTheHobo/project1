@@ -13,7 +13,8 @@ public partial class CombatUi : CanvasLayer
 
 	public void connectToSignals()
 	{
-		SignalBus.showEnemyInRangeUI+= _show_enemy_in_range_ui;
+		//SignalBus signalBus = GetNode = GetNode<SignalBus>(SignalBus);
+		SignalBus.ShowEnemyInRangeUI += _show_enemy_in_range_ui;
 	}
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.

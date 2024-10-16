@@ -79,7 +79,7 @@ public partial class player : CharacterBody2D
     {
         if (body.HasMethod("enemy"))
         {
-            SignalBus.Instance.EmitSignal("enemyEnteredAttackRange");
+            EmitSignal(nameof(SignalBus.EnemyEnteredAttackRange), body);
         }
     }
 
@@ -87,7 +87,7 @@ public partial class player : CharacterBody2D
     {
         if (body.HasMethod("enemy"))
         {
-            SignalBus.Instance.EmitSignal("enemyLeftAttackRange");
+            EmitSignal(nameof(SignalBus.EnemyLeftAttackRange), body);
         }
     }
 }
