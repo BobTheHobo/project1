@@ -19,12 +19,12 @@ public partial class player : CharacterBody2D
 
     public override void _PhysicsProcess(double delta)
     {
-        var velocity = Velocity;
+        Godot.Vector2 velocity = Velocity;
 
         // Add the gravity.
         if (!IsOnFloor())
         {
-            velocity.Y += GetGravity() * (float)delta;
+            velocity.Y += GetGravity().Y * (float)delta;
         }
 
         // Handle Jump.
@@ -35,35 +35,51 @@ public partial class player : CharacterBody2D
 
         // Get the input direction and handle the movement/deceleration.
         // As good practice, you should replace UI actions with custom gameplay actions.
-        float direction = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down");
-        if (direction != 0)
+        Godot.Vector2 direction = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down");
+        if (direction.X != 0)
         {
-            direction_facing = (int)Mathf.Sign(direction);
+            direction_facing = (int)Mathf.Sign(direction.X);
             velocity.X = direction.X * Speed;
         }
         else
         {
             velocity.X = Mathf.MoveToward(Velocity.X, 0, Speed);
         }
-
+        
+        //flip the player model if going left
         if (direction_facing == -1)
         {
-            AnimatedSprite2D.flip_h = true;
+            AnimatedSprite2D animatedSprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+            animatedSprite2D.FlipH = true;
         }
         else
         {
-            AnimatedSprite2D.flip_h = false;
+            AnimatedSprite2D animatedSprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+            animatedSprite2D.FlipH = false;
         }
 
         Velocity = velocity;
         MoveAndSlide();
+
+        if (velocity.X != 0)
+        {
+            AnimatedSprite2D animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+            velocity.X = direction.X * Speed;
+            animatedSprite.Play("Run");
+        }
+        else
+        {
+            velocity.X = Mathf.MoveToward(velocity.X, 0, Speed);
+            AnimatedSprite2D animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+            animatedSprite.Play("Idle");
+        }
     }
 
     public void OnAttackRangeBodyEntered(Node2D body)
     {
         if (body.HasMethod("enemy"))
         {
-            SignalBus.enemyEnteredAttackRange.Emit(body);
+            EmitSignal(nameof(SignalBus.EnemyEnteredAttackRange), body);
         }
     }
 
@@ -71,7 +87,7 @@ public partial class player : CharacterBody2D
     {
         if (body.HasMethod("enemy"))
         {
-            SignalBus.enemyLeftAttackRange.Emit(body);
+            EmitSignal(nameof(SignalBus.EnemyLeftAttackRange), body);
         }
     }
 }
