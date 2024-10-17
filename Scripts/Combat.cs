@@ -17,20 +17,20 @@ public partial class Combat : Node
 
     private void ConnectToSignals()
     {
-        SignalBus.EnemyEnteredAttackRange += OnEnemyEnteredAttackRange;
-        SignalBus.EnemyLeftAttackRange += OnEnemyLeftAttackRange;
+        SignalBus.Instance.EnemyEnteredAttackRange += OnEnemyEnteredAttackRange;
+        SignalBus.Instance.EnemyLeftAttackRange += OnEnemyLeftAttackRange;
     }
 
     private void OnEnemyEnteredAttackRange(Node2D body)
     {
         AddEnemyInRange(body);
-        EmitSignal(SignalBus.ShowEnemyInRangeUI, true);
+        SignalBus.Instance.EmitSignal(SignalBus.SignalName.ShowEnemyInRangeUI, true);
     }
 
     private void OnEnemyLeftAttackRange(Node2D body)
     {
         RemoveEnemyInRange(body);
-        EmitSignal(SignalBus.ShowEnemyInRangeUI, false);
+        SignalBus.Instance.EmitSignal(SignalBus.SignalName.ShowEnemyInRangeUI, false);
     }
 
     // Adds enemy to enemy in range array
@@ -69,6 +69,7 @@ public partial class Combat : Node
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+        _enemiesInRange = new System.Collections.ArrayList();
         ConnectToSignals();
     }
 

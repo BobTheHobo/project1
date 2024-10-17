@@ -1,7 +1,7 @@
 [gd_scene load_steps=19 format=3 uid="uid://dig0ksxyri4o7"]
 
 [ext_resource type="Texture2D" uid="uid://cp1m7choncc72" path="res://brackeys_platformer_assets/brackeys_platformer_assets/sprites/knight.png" id="1_sketi"]
-[ext_resource type="Script" path="res://Scripts/Player.cs" id="1_uowed"]
+[ext_resource type="Script" path="res://Scripts/player.cs" id="1_uowed"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_twbps"]
 atlas = ExtResource("1_sketi")
@@ -100,8 +100,8 @@ animations = [{
 "speed": 8.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_vs5gc"]
-size = Vector2(12, 16)
+[sub_resource type="CircleShape2D" id="CircleShape2D_a1qbk"]
+radius = 6.0208
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tryhn"]
 size = Vector2(12, 16)
@@ -121,8 +121,8 @@ animation = &"Run"
 autoplay = "Idle"
 
 [node name="SpriteCollisionShape" type="CollisionShape2D" parent="."]
-position = Vector2(0, -10)
-shape = SubResource("RectangleShape2D_vs5gc")
+position = Vector2(0, -8.5)
+shape = SubResource("CircleShape2D_a1qbk")
 
 [node name="PlayerHitbox" type="Area2D" parent="."]
 

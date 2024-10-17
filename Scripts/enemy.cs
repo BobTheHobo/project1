@@ -33,7 +33,7 @@ public partial class enemy : CharacterBody2D
         {
             _attackSequence[i] = _rng.Next(0, 3); // Generate random number between 0 and 2
         }
-        GD.Print("Attack sequence generated: %s", GetAttackSequenceString());
+        GD.Print("Attack sequence generated:", GetAttackSequenceString());
     }
 
     private void HandleAnimations()
@@ -79,19 +79,19 @@ public partial class enemy : CharacterBody2D
         MoveAndSlide();
     }
 
-    private void OnDetectionAreaBodyEntered(Node2D body)
+    private void _on_detection_area_body_entered(Node2D body)
     {
         _player = body;
         _playerChase = true;
     }
 
-    private void OnDetectionAreaBodyExited(Node2D body)
+    private void _on_detection_area_body_exited(Node2D body)
     {
         _player = null;
         _playerChase = false;
     }
 
-    private void OnAttackRangeBodyEntered(Node2D body)
+    private void _on_attack_range_body_entered(Node2D body)
     {
         if (body == _player)
         {
@@ -99,7 +99,7 @@ public partial class enemy : CharacterBody2D
         }
     }
 
-    private void OnAttackRangeBodyExited(Node2D body)
+    private void _on_attack_range_body_exited(Node2D body)
     {
         if (body == _player)
         {

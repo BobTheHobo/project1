@@ -1,10 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://cvbw33wxicno8"]
+[gd_scene load_steps=7 format=3 uid="uid://cvbw33wxicno8"]
 
 [ext_resource type="PackedScene" uid="uid://dig0ksxyri4o7" path="res://Scenes/player.tscn" id="1_7i84x"]
 [ext_resource type="Texture2D" uid="uid://d0vk1vesrj834" path="res://brackeys_platformer_assets/brackeys_platformer_assets/sprites/world_tileset.png" id="2_q2583"]
 [ext_resource type="PackedScene" uid="uid://dj3fdpeiw6km0" path="res://Scenes/enemy.tscn" id="3_1nlby"]
-[ext_resource type="PackedScene" uid="uid://8to6iad3re58" path="res://Scenes/UI/combatUi.tscn" id="4_rx76b"]
-[ext_resource type="Script" path="res://Scripts/CombatUi.cs" id="5_uevna"]
+[ext_resource type="PackedScene" uid="uid://8to6iad3re58" path="res://Scenes/UI/combat_ui.tscn" id="4_rx76b"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7g8po"]
 texture = ExtResource("2_q2583")
@@ -172,9 +171,10 @@ sources/0 = SubResource("TileSetAtlasSource_7g8po")
 [node name="Game" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource("1_7i84x")]
-position = Vector2(-311, 77)
+position = Vector2(-321, 58)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
+position = Vector2(-1, -11)
 zoom = Vector2(2, 2)
 position_smoothing_enabled = true
 
@@ -186,5 +186,4 @@ layer_0/tile_data = PackedInt32Array(720843, 0, 0, 720844, 0, 0, 720845, 0, 0, 7
 [node name="Enemy" parent="." instance=ExtResource("3_1nlby")]
 position = Vector2(-518, 134)
 
-[node name="CombatUi" parent="." instance=ExtResource("4_rx76b")]
-script = ExtResource("5_uevna")
+[node name="combat_ui" parent="." instance=ExtResource("4_rx76b")]

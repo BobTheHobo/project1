@@ -45,7 +45,7 @@ public partial class player : CharacterBody2D
         {
             velocity.X = Mathf.MoveToward(Velocity.X, 0, Speed);
         }
-        
+
         //flip the player model if going left
         if (direction_facing == -1)
         {
@@ -75,19 +75,29 @@ public partial class player : CharacterBody2D
         }
     }
 
-    public void OnAttackRangeBodyEntered(Node2D body)
+    public void _on_attack_range_body_entered(Node2D body)
     {
-        if (body.HasMethod("enemy"))
+        if (body.HasMethod("IsEnemy"))
         {
-            EmitSignal(nameof(SignalBus.EnemyEnteredAttackRange), body);
+            SignalBus.Instance.EmitSignal(SignalBus.SignalName.EnemyEnteredAttackRange, body);
         }
     }
 
-    public void OnAttackRangeBodyExited(Node2D body)
+    public void _on_attack_range_body_exited(Node2D body)
     {
-        if (body.HasMethod("enemy"))
+        if (body.HasMethod("IsEnemy"))
         {
-            EmitSignal(nameof(SignalBus.EnemyLeftAttackRange), body);
+            SignalBus.Instance.EmitSignal(SignalBus.SignalName.EnemyLeftAttackRange, body);
         }
+    }
+
+    // Called when the node enters the scene tree for the first time.
+    public override void _Ready()
+    {
+    }
+
+    // Called every frame. 'delta' is the elapsed time since the previous frame.
+    public override void _Process(double delta)
+    {
     }
 }
