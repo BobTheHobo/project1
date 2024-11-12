@@ -186,3 +186,4 @@ layer_0/tile_data = PackedInt32Array(720843, 0, 0, 720844, 0, 0, 720845, 0, 0, 7
 position = Vector2(-518, 134)
 
 [node name="CombatUi" parent="." instance=ExtResource("4_rx76b")]
+script = null

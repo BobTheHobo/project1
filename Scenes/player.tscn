@@ -1,11 +1,7 @@
-<<<<<<< Updated upstream
-[gd_scene load_steps=11 format=3 uid="uid://dig0ksxyri4o7"]
-=======
 [gd_scene load_steps=29 format=3 uid="uid://dig0ksxyri4o7"]
->>>>>>> Stashed changes
 
 [ext_resource type="Texture2D" uid="uid://cp1m7choncc72" path="res://brackeys_platformer_assets/brackeys_platformer_assets/sprites/knight.png" id="1_sketi"]
-[ext_resource type="Script" path="res://Scripts/Player.cs" id="1_uowed"]
+[ext_resource type="Script" path="res://Scripts/player.cs" id="1_uowed"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vjccd"]
 atlas = ExtResource("1_sketi")
@@ -47,8 +43,6 @@ region = Rect2(64, 0, 32, 32)
 atlas = ExtResource("1_sketi")
 region = Rect2(96, 0, 32, 32)
 
-<<<<<<< Updated upstream
-=======
 [sub_resource type="AtlasTexture" id="AtlasTexture_o74ep"]
 atlas = ExtResource("1_sketi")
 region = Rect2(0, 64, 32, 32)
@@ -97,7 +91,6 @@ region = Rect2(32, 224, 32, 32)
 atlas = ExtResource("1_sketi")
 region = Rect2(0, 224, 32, 32)
 
->>>>>>> Stashed changes
 [sub_resource type="SpriteFrames" id="SpriteFrames_18k6j"]
 animations = [{
 "frames": [{
@@ -145,12 +138,32 @@ animations = [{
 "name": &"Idle",
 "speed": 10.0
 }, {
-"frames": [],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o74ep")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c17l8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m5c1x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5xd3f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wejc6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_350j0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3483d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hf77p")
+}],
 "loop": true,
-<<<<<<< Updated upstream
-"name": &"new_animation",
-"speed": 5.0
-=======
 "name": &"Run",
 "speed": 6.0
 }, {
@@ -170,11 +183,10 @@ animations = [{
 "loop": false,
 "name": &"Special Attack",
 "speed": 4.0
->>>>>>> Stashed changes
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_vs5gc"]
-size = Vector2(12, 16)
+[sub_resource type="CircleShape2D" id="CircleShape2D_a1qbk"]
+radius = 6.0208
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tryhn"]
 size = Vector2(12, 16)
@@ -190,17 +202,12 @@ script = ExtResource("1_uowed")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -14)
 sprite_frames = SubResource("SpriteFrames_18k6j")
-<<<<<<< Updated upstream
-animation = &"Idle"
-=======
 animation = &"Special Attack"
->>>>>>> Stashed changes
 autoplay = "Idle"
-frame_progress = 0.712173
 
 [node name="SpriteCollisionShape" type="CollisionShape2D" parent="."]
-position = Vector2(0, -10)
-shape = SubResource("RectangleShape2D_vs5gc")
+position = Vector2(0, -8.5)
+shape = SubResource("CircleShape2D_a1qbk")
 
 [node name="PlayerHitbox" type="Area2D" parent="."]
 
