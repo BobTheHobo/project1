@@ -1,0 +1,140 @@
+[gd_scene load_steps=19 format=3 uid="uid://dig0ksxyri4o7"]
+
+[ext_resource type="Texture2D" uid="uid://cp1m7choncc72" path="res://brackeys_platformer_assets/brackeys_platformer_assets/sprites/knight.png" id="1_sketi"]
+[ext_resource type="Script" path="res://Scripts/player.cs" id="1_uowed"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_twbps"]
+atlas = ExtResource("1_sketi")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hkxjr"]
+atlas = ExtResource("1_sketi")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0p2im"]
+atlas = ExtResource("1_sketi")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yss3o"]
+atlas = ExtResource("1_sketi")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o74ep"]
+atlas = ExtResource("1_sketi")
+region = Rect2(0, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c17l8"]
+atlas = ExtResource("1_sketi")
+region = Rect2(32, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m5c1x"]
+atlas = ExtResource("1_sketi")
+region = Rect2(64, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5xd3f"]
+atlas = ExtResource("1_sketi")
+region = Rect2(96, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wejc6"]
+atlas = ExtResource("1_sketi")
+region = Rect2(128, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_350j0"]
+atlas = ExtResource("1_sketi")
+region = Rect2(160, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3483d"]
+atlas = ExtResource("1_sketi")
+region = Rect2(192, 64, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hf77p"]
+atlas = ExtResource("1_sketi")
+region = Rect2(224, 64, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_18k6j"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_twbps")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hkxjr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0p2im")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yss3o")
+}],
+"loop": true,
+"name": &"Idle",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o74ep")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c17l8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m5c1x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5xd3f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wejc6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_350j0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3483d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hf77p")
+}],
+"loop": true,
+"name": &"Run",
+"speed": 8.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_a1qbk"]
+radius = 6.0208
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tryhn"]
+size = Vector2(12, 16)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vp837"]
+radius = 40.05
+
+[node name="Player" type="CharacterBody2D"]
+position = Vector2(0, 2)
+collision_layer = 3
+script = ExtResource("1_uowed")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -14)
+sprite_frames = SubResource("SpriteFrames_18k6j")
+animation = &"Run"
+autoplay = "Idle"
+
+[node name="SpriteCollisionShape" type="CollisionShape2D" parent="."]
+position = Vector2(0, -8.5)
+shape = SubResource("CircleShape2D_a1qbk")
+
+[node name="PlayerHitbox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerHitbox"]
+position = Vector2(0, -10)
+shape = SubResource("RectangleShape2D_tryhn")
+
+[node name="AttackRange" type="Area2D" parent="."]
+
+[node name="AttackRangeCollisionShape" type="CollisionShape2D" parent="AttackRange"]
+position = Vector2(0, -11)
+shape = SubResource("CircleShape2D_vp837")
+
+[connection signal="body_entered" from="AttackRange" to="." method="_on_attack_range_body_entered"]
+[connection signal="body_exited" from="AttackRange" to="." method="_on_attack_range_body_exited"]

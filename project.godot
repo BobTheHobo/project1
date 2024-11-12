@@ -11,13 +11,22 @@ config_version=5
 [application]
 
 config/name="RPS RPG"
-run/main_scene="res://main.tscn"
-config/features=PackedStringArray("4.3", "Forward Plus")
+run/main_scene="res://Scenes/main.tscn"
+config/features=PackedStringArray("4.3", "C#", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+SignalBus="*res://Scripts/SignalBus.cs"
+Combat="*res://Scripts/Combat.cs"
 
 [display]
 
 window/stretch/mode="canvas_items"
+
+[dotnet]
+
+project/assembly_name="RPS RPG"
 
 [input]
 

@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://8to6iad3re58"]
+
+[ext_resource type="Script" path="res://Scripts/combat_ui.cs" id="1_u5t53"]
+
+[node name="combat_ui" type="CanvasLayer"]
+script = ExtResource("1_u5t53")
+
+[node name="EnemyInRangeLabel" type="Label" parent="."]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -60.0
+offset_right = 60.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "enemy in range"
