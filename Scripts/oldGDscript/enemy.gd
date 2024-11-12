@@ -66,5 +66,5 @@ func _ready() -> void:
 	generateAttackSequence(6)
 
 	# Method to signifiy that this is an enemy, DON'T DELETE
-func enemy():
+func isEnemy():
 	pass

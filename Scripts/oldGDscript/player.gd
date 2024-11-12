@@ -9,7 +9,7 @@ const JUMP_VELOCITY = -300.0
 var direction_facing = 1 # 1 is right, -1 is le ft
 
 # Method specifies that this is a player DO NOT REMOVE
-func player():
+func isPlayer():
 	pass
 	
 func _physics_process(delta: float) -> void:
