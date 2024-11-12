@@ -10,6 +10,12 @@ public partial class player : CharacterBody2D
     public const float Speed = 200.0f;
     public const float JumpVelocity = -300.0f;
 
+    public string Attack_Type;
+    public bool current_attack = false;
+
+    public AnimatedSprite2D animatedSprite;
+    public CollisionShape2D attack_zone;
+
     public int direction_facing = 1; //1 is right, -1 is left
 
     // Method specifies that this is a player DO NOT REMOVE
@@ -49,30 +55,75 @@ public partial class player : CharacterBody2D
         //flip the player model if going left
         if (direction_facing == -1)
         {
-            AnimatedSprite2D animatedSprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
-            animatedSprite2D.FlipH = true;
+            animatedSprite.FlipH = true;
+
+            Vector2 position = attack_zone.Position;
+            position.X = -Math.Abs(position.X);
+            attack_zone.Set("position", position);
         }
         else
         {
-            AnimatedSprite2D animatedSprite2D = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
-            animatedSprite2D.FlipH = false;
+        
+            animatedSprite.FlipH = false;
+
+            Vector2 position = attack_zone.Position;
+            position.X = Math.Abs(position.X);
+            attack_zone.Set("position", position);
         }
 
         Velocity = velocity;
         MoveAndSlide();
 
-        if (velocity.X != 0)
+        if (velocity.X != 0 && !current_attack)
         {
-            AnimatedSprite2D animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
             velocity.X = direction.X * Speed;
             animatedSprite.Play("Run");
         }
-        else
+        if (velocity.X == 0 && !current_attack)
         {
             velocity.X = Mathf.MoveToward(velocity.X, 0, Speed);
-            AnimatedSprite2D animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
             animatedSprite.Play("Idle");
         }
+        
+        //Attack input and attack type assignment
+        
+        if (Input.IsActionPressed("Basic Attack"))
+        { 
+            current_attack = true;
+            Attack_Type = "Basic Attack";
+            _Attack_Animation(Attack_Type);
+        }
+
+        if (Input.IsActionPressed("Heavy Attack"))
+        {
+            current_attack = true;
+            Attack_Type = "Heavy Attack";
+            _Attack_Animation(Attack_Type);
+        }
+
+        if (Input.IsActionPressed("Special Attack"))
+        {
+            current_attack = true;
+            Attack_Type = "Special Attack";
+            _Attack_Animation(Attack_Type);
+        }
+        
+    }
+
+    public void _Attack_Animation(string Attack_Type)
+    {
+        if (current_attack)
+        {
+            if (Attack_Type == "Basic Attack" || Attack_Type =="Heavy Attack" || Attack_Type == "Special Attack")
+            {
+                animatedSprite.Play(Attack_Type);
+            }
+        }
+    }
+
+    public void _on_animated_sprite_2d_animation_finished()
+    {
+        current_attack = false;
     }
 
     public void _on_attack_range_body_entered(Node2D body)
@@ -94,6 +145,8 @@ public partial class player : CharacterBody2D
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+        animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+        attack_zone = GetNode<Area2D>("Attack_Zone").GetChild<CollisionShape2D>(0);
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
