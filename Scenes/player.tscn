@@ -1,31 +1,31 @@
-[gd_scene load_steps=29 format=3 uid="uid://dig0ksxyri4o7"]
+[gd_scene load_steps=30 format=3 uid="uid://dig0ksxyri4o7"]
 
 [ext_resource type="Texture2D" uid="uid://cp1m7choncc72" path="res://brackeys_platformer_assets/brackeys_platformer_assets/sprites/knight.png" id="1_sketi"]
 [ext_resource type="Script" path="res://Scripts/player.cs" id="1_uowed"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_vjccd"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_ta0be"]
 atlas = ExtResource("1_sketi")
 region = Rect2(96, 160, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_k50bw"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_fjyqm"]
 atlas = ExtResource("1_sketi")
 region = Rect2(128, 160, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_w20xd"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_bh48v"]
 atlas = ExtResource("1_sketi")
 region = Rect2(64, 192, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_kjuhu"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_6ooas"]
 atlas = ExtResource("1_sketi")
 region = Rect2(64, 192, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_g3krt"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_6op5u"]
+atlas = ExtResource("1_sketi")
+region = Rect2(96, 160, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5yf8e"]
 atlas = ExtResource("1_sketi")
 region = Rect2(96, 224, 32, 32)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_76adj"]
-atlas = ExtResource("1_sketi")
-region = Rect2(32, 224, 32, 32)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_twbps"]
 atlas = ExtResource("1_sketi")
@@ -75,47 +75,51 @@ region = Rect2(192, 64, 32, 32)
 atlas = ExtResource("1_sketi")
 region = Rect2(224, 64, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_entwj"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_jeflp"]
 atlas = ExtResource("1_sketi")
-region = Rect2(96, 224, 32, 32)
+region = Rect2(96, 0, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_8hcmk"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_x2a31"]
 atlas = ExtResource("1_sketi")
-region = Rect2(64, 224, 32, 32)
+region = Rect2(0, 224, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_ciukd"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_g7ou1"]
 atlas = ExtResource("1_sketi")
 region = Rect2(32, 224, 32, 32)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_sfmky"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_4xhmm"]
 atlas = ExtResource("1_sketi")
-region = Rect2(0, 224, 32, 32)
+region = Rect2(64, 224, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o7hi4"]
+atlas = ExtResource("1_sketi")
+region = Rect2(96, 224, 32, 32)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_18k6j"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_vjccd")
+"texture": SubResource("AtlasTexture_ta0be")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_k50bw")
+"texture": SubResource("AtlasTexture_fjyqm")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_w20xd")
+"texture": SubResource("AtlasTexture_bh48v")
 }],
 "loop": false,
 "name": &"Basic Attack",
-"speed": 6.0
+"speed": 4.0
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_kjuhu")
+"texture": SubResource("AtlasTexture_6ooas")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_g3krt")
+"texture": SubResource("AtlasTexture_6op5u")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_76adj")
+"texture": SubResource("AtlasTexture_5yf8e")
 }],
 "loop": false,
 "name": &"Heavy Attack",
@@ -163,35 +167,65 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_hf77p")
 }],
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o74ep")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c17l8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m5c1x")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5xd3f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wejc6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_350j0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3483d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hf77p")
+}],
 "loop": true,
 "name": &"Run",
-"speed": 6.0
+"speed": 8.0
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_entwj")
+"texture": SubResource("AtlasTexture_jeflp")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_8hcmk")
+"texture": SubResource("AtlasTexture_x2a31")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ciukd")
+"texture": SubResource("AtlasTexture_g7ou1")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_sfmky")
+"texture": SubResource("AtlasTexture_4xhmm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o7hi4")
 }],
 "loop": false,
 "name": &"Special Attack",
-"speed": 4.0
+"speed": 7.0
 }]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_a1qbk"]
+radius = 6.0208
 [sub_resource type="CircleShape2D" id="CircleShape2D_a1qbk"]
 radius = 6.0208
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tryhn"]
 size = Vector2(12, 16)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_angfb"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uacod"]
 size = Vector2(12, 8)
 
 [node name="Player" type="CharacterBody2D"]
@@ -203,9 +237,12 @@ script = ExtResource("1_uowed")
 position = Vector2(0, -14)
 sprite_frames = SubResource("SpriteFrames_18k6j")
 animation = &"Special Attack"
+animation = &"Special Attack"
 autoplay = "Idle"
 
 [node name="SpriteCollisionShape" type="CollisionShape2D" parent="."]
+position = Vector2(0, -8.5)
+shape = SubResource("CircleShape2D_a1qbk")
 position = Vector2(0, -8.5)
 shape = SubResource("CircleShape2D_a1qbk")
 
@@ -216,10 +253,11 @@ position = Vector2(0, -10)
 shape = SubResource("RectangleShape2D_tryhn")
 
 [node name="Attack_Zone" type="Area2D" parent="."]
+[node name="Attack_Zone" type="Area2D" parent="."]
 
 [node name="Damage_Zone" type="CollisionShape2D" parent="Attack_Zone"]
-position = Vector2(12, -9)
-shape = SubResource("RectangleShape2D_angfb")
+position = Vector2(12, -10)
+shape = SubResource("RectangleShape2D_uacod")
 disabled = true
 
 [connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]

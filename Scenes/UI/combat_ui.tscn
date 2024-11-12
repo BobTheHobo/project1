@@ -1,9 +1,9 @@
 [gd_scene load_steps=2 format=3 uid="uid://8to6iad3re58"]
 
-[ext_resource type="Script" path="res://Scripts/combat_ui.cs" id="1_upqm5"]
+[ext_resource type="Script" path="res://Scripts/combat_ui.cs" id="1_u5t53"]
 
-[node name="CombatUi" type="CanvasLayer"]
-script = ExtResource("1_upqm5")
+[node name="combat_ui" type="CanvasLayer"]
+script = ExtResource("1_u5t53")
 
 [node name="EnemyInRangeLabel" type="Label" parent="."]
 anchors_preset = 5
