@@ -20,9 +20,6 @@ config/icon="res://icon.svg"
 Main="*res://Scripts/Main.cs"
 SignalBus="*res://Scripts/SignalBus.cs"
 Combat="*res://Scripts/Combat.cs"
-Main="*res://Scripts/Main.cs"
-SignalBus="*res://Scripts/SignalBus.cs"
-Combat="*res://Scripts/Combat.cs"
 
 [display]
 

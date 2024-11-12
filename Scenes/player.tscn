@@ -167,31 +167,6 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_hf77p")
 }],
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_o74ep")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_c17l8")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_m5c1x")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_5xd3f")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_wejc6")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_350j0")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_3483d")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_hf77p")
-}],
 "loop": true,
 "name": &"Run",
 "speed": 8.0
@@ -219,8 +194,6 @@ animations = [{
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_a1qbk"]
 radius = 6.0208
-[sub_resource type="CircleShape2D" id="CircleShape2D_a1qbk"]
-radius = 6.0208
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tryhn"]
 size = Vector2(12, 16)
@@ -237,12 +210,9 @@ script = ExtResource("1_uowed")
 position = Vector2(0, -14)
 sprite_frames = SubResource("SpriteFrames_18k6j")
 animation = &"Special Attack"
-animation = &"Special Attack"
 autoplay = "Idle"
 
 [node name="SpriteCollisionShape" type="CollisionShape2D" parent="."]
-position = Vector2(0, -8.5)
-shape = SubResource("CircleShape2D_a1qbk")
 position = Vector2(0, -8.5)
 shape = SubResource("CircleShape2D_a1qbk")
 
@@ -252,7 +222,6 @@ shape = SubResource("CircleShape2D_a1qbk")
 position = Vector2(0, -10)
 shape = SubResource("RectangleShape2D_tryhn")
 
-[node name="Attack_Zone" type="Area2D" parent="."]
 [node name="Attack_Zone" type="Area2D" parent="."]
 
 [node name="Damage_Zone" type="CollisionShape2D" parent="Attack_Zone"]
