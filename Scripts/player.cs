@@ -41,7 +41,7 @@ public partial class player : CharacterBody2D
 
         // Get the input direction and handle the movement/deceleration.
         // As good practice, you should replace UI actions with custom gameplay actions.
-        Godot.Vector2 direction = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down");
+        Godot.Vector2 direction = Input.GetVector("Left", "Right", "Up", "Down");
         if (direction.X != 0)
         {
             direction_facing = (int)Mathf.Sign(direction.X);
