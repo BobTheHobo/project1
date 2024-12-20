@@ -23,29 +23,9 @@ public partial class enemy : CharacterBody2D
 
     private void DisplayCurrentAttack()
     {
-        GD.Print("Current enemy attack: ", Combat.Instance.GetAttackString(_currentAttack));
+        GD.Print("Current enemy attack: ", Combat.GetAttackString(_currentAttack));
     }
 
-    private string GetAttackSequenceString()
-    {
-        string sequence = "";
-        for (int i = 0; i < _attackSequence.Length; i++)
-        {
-            sequence += Combat.Instance.GetAttackString(_attackSequence[i]);
-        }
-        return sequence;
-
-    }
-
-    private void GenerateAttackSequence(int numAttacks)
-    {
-        _attackSequence = new Combat.AttackType[numAttacks];
-        for (int i = 0; i < numAttacks; i++)
-        {
-            _attackSequence[i] = (Combat.AttackType)_rng.Next(1, 4); // Generate random number between 1 and 3
-        }
-        GD.Print("Attack sequence generated:", GetAttackSequenceString());
-    }
 
     private void HandleAnimations()
     {
@@ -122,7 +102,7 @@ public partial class enemy : CharacterBody2D
     public override void _Ready()
     {
         _sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
-        GenerateAttackSequence(6);
+        Combat.Instance.GenerateAttackSequence(6);
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.

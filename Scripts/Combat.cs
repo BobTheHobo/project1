@@ -11,13 +11,14 @@ public partial class Combat : Node
     private Node2D _player; // current player
     private Node2D _targetedBody = null; // body that the player is currently targeting
     private bool _inEnemyRange = false; // whether or not player is in range of an enemy
+    private Random _rng = new Random(); // Random num generator
 
     public enum AttackType // Defines the attack type
     {
         None = 0,
-        Rock = 1,
-        Paper = 2,
-        Scissor = 3
+        Light = 1,
+        Heavy = 2,
+        Special = 3
     }
 
     System.Collections.ArrayList _enemiesInRange; // Holds enemies that are in range of player
@@ -25,7 +26,10 @@ public partial class Combat : Node
 
     private bool _enemyInRange = false; // if any enemy is in player attack range
     private bool _enemyInRangeIndicator = false; // indicates that an enemy is in range
-    public string GetAttackString(AttackType attackType)
+    
+    // Returns string of an attack type
+    // Static because you don't need an instance
+    public static string GetAttackString(AttackType attackType)
     {
         switch(attackType)
         {
@@ -33,23 +37,49 @@ public partial class Combat : Node
             {
                 return "None";
             }
-            case AttackType.Rock:
+            case AttackType.Light:
             {
-                return "Rock";
+                return "Light";
             }
-            case AttackType.Paper:
+            case AttackType.Heavy:
             {
                 return "Paper";
             }
-            case AttackType.Scissor:
+            case AttackType.Special:
             {
-                return "Scissor";
+                return "Special";
             }
             default: // Catch all, shouldn't be triggered?
             {
                 return "Undefined";
             }
         } 
+    }
+    
+    // Generates an attack sequence given a number of attacks
+    // Returns an array of AttackTypes
+    // Can't be static because we need to reference the same RNG instance?
+    public AttackType[] GenerateAttackSequence(int numAttacks)
+    {
+        AttackType[] attackSequence = new Combat.AttackType[numAttacks];
+        for (int i = 0; i < numAttacks; i++)
+        {
+            attackSequence[i] = (AttackType)_rng.Next(1, 4); // Generate random attacks between 1 and 3
+        }
+        GD.Print("Attack sequence generated:", GetAttackSequenceString(attackSequence));
+        return attackSequence;
+    }
+
+    // Gets a string of attack types concatenated
+    // Static because we don't need to reference a class instance
+    public static string GetAttackSequenceString(AttackType[] attacks)
+    {
+        string sequence = "";
+        for (int i = 0; i < attacks.Length; i++)
+        {
+            sequence += GetAttackString(attacks[i]);
+        }
+        return sequence;
     }
 
     private void ConnectToSignals()
