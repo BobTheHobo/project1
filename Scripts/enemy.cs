@@ -101,6 +101,8 @@ public partial class enemy : CharacterBody2D
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+        Main.AddEnemy(this); // Make sure to add every enemy to the global list so that it can be easily tracked by combat and other scripts
+
         _sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         Combat.Instance.GenerateAttackSequence(6);
     }

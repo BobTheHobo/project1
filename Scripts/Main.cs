@@ -1,10 +1,16 @@
 using Godot;
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 
 // Added to global scripts
 public partial class Main : Node
 {
+    // Using a dynamic list to hold enemies in scene
+    private static List<enemy> _enemies = new List<enemy>();
+
+    // Holds a reference to player with read only access
+    public static player _player {get; set;}
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
@@ -39,4 +45,26 @@ public partial class Main : Node
 
     }
 
+    // Adds enemy to global list for usage in other scripts
+    public static void AddEnemy(enemy enmy)
+    {
+        _enemies.Add(enmy);
+        GD.Print("Enemy added to global list: " + enmy);
+    }
+
+    // Returns list of enemeies
+    public static List<enemy> GetEnemies()
+    {
+        return _enemies;
+    }
+
+    // Prints out list of current enemies in list
+    public static void printEnemies()
+    {
+        GD.Print(_enemies.Count.ToString() + " enemies in list:");
+        foreach (enemy en in _enemies)
+        {
+            GD.Print("  " + en.Name + ": " + en.ToString());    
+        }
+    }
 }

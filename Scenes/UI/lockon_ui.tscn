@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://c5nxdtl7hu0wd"]
+
+[ext_resource type="Script" path="res://Scripts/LockonUi.cs" id="1_2ky1j"]
+[ext_resource type="Texture2D" uid="uid://bwtqxawyvreou" path="res://Assets/lockon.png" id="1_4u3nf"]
+
+[node name="LockonUi" type="Node2D"]
+script = ExtResource("1_2ky1j")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_4u3nf")

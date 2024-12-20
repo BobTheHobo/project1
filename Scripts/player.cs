@@ -145,6 +145,7 @@ public partial class player : CharacterBody2D
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+        Main._player = this; // Sets global reference to this player instance
         animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         attack_zone = GetNode<Area2D>("Attack_Zone").GetChild<CollisionShape2D>(0);
     }
@@ -152,5 +153,11 @@ public partial class player : CharacterBody2D
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta)
     {
+    }
+
+    public override void _Input(InputEvent @event)
+    {
+        // Use combat input handler defined in Combat.cs
+        Combat.Instance.CombatInputHandler(@event);
     }
 }

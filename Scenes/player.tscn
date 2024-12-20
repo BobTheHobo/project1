@@ -203,7 +203,7 @@ size = Vector2(12, 16)
 size = Vector2(12, 8)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_u43aa"]
-radius = 90.6697
+radius = 134.373
 
 [node name="Player" type="CharacterBody2D"]
 position = Vector2(0, 2)
