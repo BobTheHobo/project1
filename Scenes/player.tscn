@@ -1,7 +1,8 @@
-[gd_scene load_steps=31 format=3 uid="uid://dig0ksxyri4o7"]
+[gd_scene load_steps=32 format=3 uid="uid://dig0ksxyri4o7"]
 
 [ext_resource type="Texture2D" uid="uid://cp1m7choncc72" path="res://brackeys_platformer_assets/brackeys_platformer_assets/sprites/knight.png" id="1_sketi"]
 [ext_resource type="Script" path="res://Scripts/player.cs" id="1_uowed"]
+[ext_resource type="FontFile" uid="uid://cah7dwef18jbi" path="res://brackeys_platformer_assets/brackeys_platformer_assets/fonts/PixelOperator8.ttf" id="3_xauv2"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ta0be"]
 atlas = ExtResource("1_sketi")
@@ -202,7 +203,7 @@ size = Vector2(12, 16)
 size = Vector2(12, 8)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_u43aa"]
-radius = 48.1664
+radius = 90.6697
 
 [node name="Player" type="CharacterBody2D"]
 position = Vector2(0, 2)
@@ -237,6 +238,23 @@ disabled = true
 [node name="Detection_Zone" type="CollisionShape2D" parent="Detection_Zone"]
 position = Vector2(0, -10)
 shape = SubResource("CircleShape2D_u43aa")
+
+[node name="Attack_Indicator" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -9.0
+offset_top = -24.0
+offset_right = 8.0
+offset_bottom = -2.0
+
+[node name="Attack_Type" type="Label" parent="Attack_Indicator"]
+offset_left = -13.0
+offset_top = -6.0
+offset_right = 38.0
+offset_bottom = 22.0
+theme_override_fonts/font = ExtResource("3_xauv2")
+theme_override_font_sizes/font_size = 8
+text = "Attack:"
 
 [connection signal="animation_finished" from="AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]
 [connection signal="body_entered" from="Detection_Zone" to="." method="_on_attack_range_body_entered"]

@@ -1,7 +1,8 @@
-[gd_scene load_steps=14 format=3 uid="uid://dj3fdpeiw6km0"]
+[gd_scene load_steps=15 format=3 uid="uid://dj3fdpeiw6km0"]
 
 [ext_resource type="Script" path="res://Scripts/enemy.cs" id="1_hkrnh"]
 [ext_resource type="Texture2D" uid="uid://cd4x4fkq0lt83" path="res://brackeys_platformer_assets/brackeys_platformer_assets/sprites/slime_green.png" id="2_qdlvr"]
+[ext_resource type="FontFile" uid="uid://cah7dwef18jbi" path="res://brackeys_platformer_assets/brackeys_platformer_assets/fonts/PixelOperator8.ttf" id="3_ey453"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7kxpm"]
 atlas = ExtResource("2_qdlvr")
@@ -119,6 +120,23 @@ shape = SubResource("RectangleShape2D_m8clk")
 [node name="AttackRangeCollisionShape" type="CollisionShape2D" parent="AttackRange"]
 position = Vector2(0, -9)
 shape = SubResource("CircleShape2D_y6k4k")
+
+[node name="Attack_Indicator" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -9.0
+offset_top = -24.0
+offset_right = 8.0
+offset_bottom = -2.0
+
+[node name="Attack_Type" type="Label" parent="Attack_Indicator"]
+offset_left = -13.0
+offset_top = -3.0
+offset_right = 38.0
+offset_bottom = 25.0
+theme_override_fonts/font = ExtResource("3_ey453")
+theme_override_font_sizes/font_size = 8
+text = "Attack:"
 
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
 [connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]

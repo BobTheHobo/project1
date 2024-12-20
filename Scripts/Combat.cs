@@ -3,17 +3,54 @@ using System;
 
 // Controls everything combat related, including the combat UI
 // EIR = enemy in range
+[GlobalClass]
 public partial class Combat : Node
 {
+    // Defines singleton instance of Combat
+    public static Combat Instance { get; private set; }
     private Node2D _player; // current player
     private Node2D _targetedBody = null; // body that the player is currently targeting
     private bool _inEnemyRange = false; // whether or not player is in range of an enemy
+
+    public enum AttackType // Defines the attack type
+    {
+        None = 0,
+        Rock = 1,
+        Paper = 2,
+        Scissor = 3
+    }
 
     System.Collections.ArrayList _enemiesInRange; // Holds enemies that are in range of player
 
 
     private bool _enemyInRange = false; // if any enemy is in player attack range
     private bool _enemyInRangeIndicator = false; // indicates that an enemy is in range
+    public string GetAttackString(AttackType attackType)
+    {
+        switch(attackType)
+        {
+            case AttackType.None:
+            {
+                return "None";
+            }
+            case AttackType.Rock:
+            {
+                return "Rock";
+            }
+            case AttackType.Paper:
+            {
+                return "Paper";
+            }
+            case AttackType.Scissor:
+            {
+                return "Scissor";
+            }
+            default: // Catch all, shouldn't be triggered?
+            {
+                return "Undefined";
+            }
+        } 
+    }
 
     private void ConnectToSignals()
     {
@@ -69,6 +106,7 @@ public partial class Combat : Node
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+        Instance = this; // Needed to link this instance as singleton instance
         _enemiesInRange = new System.Collections.ArrayList();
         ConnectToSignals();
     }

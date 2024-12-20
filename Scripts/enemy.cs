@@ -9,18 +9,29 @@ public partial class enemy : CharacterBody2D
     private bool _playerInAttackRange = false; //if player is in attack range
     private int _direction = 1;
     private Random _rng = new Random();
-    private int[] _attackSequence;
+    private Combat.AttackType[] _attackSequence;
+    private Combat.AttackType _currentAttack;
     private AnimatedSprite2D _sprite;
 
     // Method to signifiy that this is an enemy, DON'T DELETE
     public void IsEnemy() { }
+
+    public Combat.AttackType GetCurrentAttack()
+    {
+        return _currentAttack; 
+    }
+
+    private void DisplayCurrentAttack()
+    {
+        GD.Print("Current enemy attack: ", Combat.Instance.GetAttackString(_currentAttack));
+    }
 
     private string GetAttackSequenceString()
     {
         string sequence = "";
         for (int i = 0; i < _attackSequence.Length; i++)
         {
-            sequence += _attackSequence[i];
+            sequence += Combat.Instance.GetAttackString(_attackSequence[i]);
         }
         return sequence;
 
@@ -28,10 +39,10 @@ public partial class enemy : CharacterBody2D
 
     private void GenerateAttackSequence(int numAttacks)
     {
-        _attackSequence = new int[numAttacks];
+        _attackSequence = new Combat.AttackType[numAttacks];
         for (int i = 0; i < numAttacks; i++)
         {
-            _attackSequence[i] = _rng.Next(0, 3); // Generate random number between 0 and 2
+            _attackSequence[i] = (Combat.AttackType)_rng.Next(1, 4); // Generate random number between 1 and 3
         }
         GD.Print("Attack sequence generated:", GetAttackSequenceString());
     }
