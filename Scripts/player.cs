@@ -14,6 +14,7 @@ public partial class player : CharacterBody2D
     public bool current_attack = false;
 
     public AnimatedSprite2D animatedSprite;
+    private AnimatedSprite2D attackSprite;
     public CollisionShape2D attack_zone;
 
     public int direction_facing = 1; //1 is right, -1 is left
@@ -116,7 +117,7 @@ public partial class player : CharacterBody2D
         {
             if (Attack_Type == "Basic Attack" || Attack_Type =="Heavy Attack" || Attack_Type == "Special Attack")
             {
-                animatedSprite.Play(Attack_Type);
+                attackSprite.Play(Attack_Type);
             }
         }
     }
@@ -147,6 +148,7 @@ public partial class player : CharacterBody2D
     {
         Main._player = this; // Sets global reference to this player instance
         animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+        attackSprite = GetNode<AnimatedSprite2D>("AttackSprite2D");
         attack_zone = GetNode<Area2D>("Attack_Zone").GetChild<CollisionShape2D>(0);
     }
 
