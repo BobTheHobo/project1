@@ -261,13 +261,13 @@ animations = [{
 "speed": 5.0
 }, {
 "frames": [{
-"duration": 1.0,
+"duration": 0.4,
 "texture": SubResource("AtlasTexture_btw6b")
 }, {
-"duration": 1.0,
+"duration": 0.7,
 "texture": SubResource("AtlasTexture_svsvs")
 }, {
-"duration": 1.0,
+"duration": 0.4,
 "texture": SubResource("AtlasTexture_4rhmd")
 }],
 "loop": false,
@@ -301,7 +301,7 @@ autoplay = "Idle"
 [node name="AttackSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, 3)
 sprite_frames = SubResource("SpriteFrames_1tmcn")
-animation = &"Basic Attack"
+animation = &"Special Attack"
 offset = Vector2(5.945, -11.025)
 
 [node name="SpriteCollisionShape" type="CollisionShape2D" parent="."]
