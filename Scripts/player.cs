@@ -56,17 +56,32 @@ public partial class player : CharacterBody2D
         //flip the player model if going left
         if (direction_facing == -1)
         {
+            // Flip attack sprite
+            attackSprite.FlipH = true;
+            Vector2 attackAnimPos = attackSprite.Offset;
+            attackAnimPos.X = -Math.Abs(attackAnimPos.X);
+            attackSprite.Set("offset", attackAnimPos);
+
+            // Flip character sprite
             animatedSprite.FlipH = true;
 
+            // Flip attack zone
             Vector2 position = attack_zone.Position;
             position.X = -Math.Abs(position.X);
             attack_zone.Set("position", position);
         }
         else
         {
-        
+            // Flip attack sprite
+            attackSprite.FlipH = false;
+            Vector2 attackAnimPos = attackSprite.Offset;
+            attackAnimPos.X = Math.Abs(attackAnimPos.X);
+            attackSprite.Set("offset", attackAnimPos);
+
+            // Flip character sprite
             animatedSprite.FlipH = false;
 
+            // Flip attack zone
             Vector2 position = attack_zone.Position;
             position.X = Math.Abs(position.X);
             attack_zone.Set("position", position);

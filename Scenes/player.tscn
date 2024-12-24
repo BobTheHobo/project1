@@ -299,10 +299,13 @@ animation = &"Special Attack"
 autoplay = "Idle"
 
 [node name="AttackSprite2D" type="AnimatedSprite2D" parent="."]
+z_index = 1
 position = Vector2(0, 3)
 sprite_frames = SubResource("SpriteFrames_1tmcn")
-animation = &"Special Attack"
-offset = Vector2(5.945, -11.025)
+animation = &"Heavy Attack"
+frame = 2
+frame_progress = 1.0
+offset = Vector2(6, -11)
 
 [node name="SpriteCollisionShape" type="CollisionShape2D" parent="."]
 visible = false
