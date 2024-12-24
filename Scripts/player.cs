@@ -100,30 +100,6 @@ public partial class player : CharacterBody2D
             velocity.X = Mathf.MoveToward(velocity.X, 0, Speed);
             animatedSprite.Play("Idle");
         }
-        
-        //Attack input and attack type assignment
-        
-        if (Input.IsActionPressed("Basic Attack"))
-        { 
-            current_attack = true;
-            Attack_Type = "Basic Attack";
-            _Attack_Animation(Attack_Type);
-        }
-
-        if (Input.IsActionPressed("Heavy Attack"))
-        {
-            current_attack = true;
-            Attack_Type = "Heavy Attack";
-            _Attack_Animation(Attack_Type);
-        }
-
-        if (Input.IsActionPressed("Special Attack"))
-        {
-            current_attack = true;
-            Attack_Type = "Special Attack";
-            _Attack_Animation(Attack_Type);
-        }
-        
     }
 
     public void _Attack_Animation(string Attack_Type)
@@ -132,14 +108,24 @@ public partial class player : CharacterBody2D
         {
             if (Attack_Type == "Basic Attack" || Attack_Type =="Heavy Attack" || Attack_Type == "Special Attack")
             {
+                attackSprite.Visible = true;
+                //((CanvasItem)attackSprite).SetVisible(true);
+                
+                GD.Print("Animation start");
+                attackSprite.SetVisible(true);
                 attackSprite.Play(Attack_Type);
             }
         }
     }
 
-    public void _on_animated_sprite_2d_animation_finished()
+    // Signal called when attack sprite animation is done
+    public void _on_attack_sprite_2d_animation_finished()
     {
         current_attack = false;
+
+        // Hide attack animation after finished
+        attackSprite.SetVisible(false);
+        GD.Print("Animation done");
     }
 
     public void _on_attack_range_body_entered(Node2D body)
@@ -176,5 +162,27 @@ public partial class player : CharacterBody2D
     {
         // Use combat input handler defined in Combat.cs
         Combat.Instance.CombatInputHandler(@event);
+
+        //Attack input and attack type assignment
+        if (@event.IsActionPressed("Basic Attack"))
+        { 
+            current_attack = true;
+            Attack_Type = "Basic Attack";
+            _Attack_Animation(Attack_Type);
+        }
+
+        if (@event.IsActionPressed("Heavy Attack"))
+        {
+            current_attack = true;
+            Attack_Type = "Heavy Attack";
+            _Attack_Animation(Attack_Type);
+        }
+
+        if (@event.IsActionPressed("Special Attack"))
+        {
+            current_attack = true;
+            Attack_Type = "Special Attack";
+            _Attack_Animation(Attack_Type);
+        }
     }
 }
