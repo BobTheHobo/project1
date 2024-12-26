@@ -260,6 +260,23 @@ public partial class Combat : Node2D
         }
     }
 
+    // Called when a player enters into an enemy's attack range
+    // Displays current enemy attack and slows down the game
+    public void CombatEntered(Node enemyInCombat)
+    {
+        // TODO: display enemy attack
+        GD.Print("Combat entered with " + enemyInCombat.Name);            
+        Slowmo.SlowmoOn(); // Turns on slowmo
+    }
+
+    // Called when a player exits enemy's attack range or when player flees
+    // Returns game to normal speed
+    public void CombatExited(Node enemyInCombat)
+    {
+        GD.Print("Combat exited");            
+        Slowmo.SlowmoOff(); // Turns off slowmo
+    }
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {

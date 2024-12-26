@@ -87,11 +87,13 @@ public partial class enemy : CharacterBody2D
         if (body == _player)
         {
             _playerInAttackRange = true;
+            Combat.Instance.CombatEntered(this);
         }
     }
 
     private void _on_attack_range_body_exited(Node2D body)
     {
+        Combat.Instance.CombatExited(this);
         if (body == _player)
         {
             _playerInAttackRange = false;
