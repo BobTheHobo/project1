@@ -13,17 +13,28 @@ public partial class enemy : CharacterBody2D
     private Combat.AttackType _currentAttack;
     private AnimatedSprite2D _sprite;
 
+    // Related to enemy UI
+    private Control _uiControl;
+    private Label _attackLabel;
+
     // Method to signifiy that this is an enemy, DON'T DELETE
     public void IsEnemy() { }
-
-    public Combat.AttackType GetCurrentAttack()
-    {
-        return _currentAttack; 
-    }
 
     private void DisplayCurrentAttack()
     {
         GD.Print("Current enemy attack: ", Combat.GetAttackString(_currentAttack));
+
+        // Overwrites whatever text is currently there
+        //string newText = _currentAttack.ToString();
+        string newText = "Attack: " + Combat.GetCurrentAttack(_attackSequence).ToString();
+        _attackLabel.SetText(newText);
+
+        _attackLabel.SetVisible(true);
+    }
+    
+    private void HideCurrentAttack()
+    {
+        _attackLabel.SetVisible(false);
     }
 
 
@@ -88,15 +99,19 @@ public partial class enemy : CharacterBody2D
         {
             _playerInAttackRange = true;
             Combat.Instance.CombatEntered(this);
+            DisplayCurrentAttack();
         }
     }
 
     private void _on_attack_range_body_exited(Node2D body)
     {
         Combat.Instance.CombatExited(this);
+        HideCurrentAttack();
+
         if (body == _player)
         {
             _playerInAttackRange = false;
+
         }
     }
 
@@ -105,8 +120,19 @@ public partial class enemy : CharacterBody2D
     {
         Main.AddEnemy(this); // Make sure to add every enemy to the global list so that it can be easily tracked by combat and other scripts
 
+        // Get sprite
         _sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
-        Combat.Instance.GenerateAttackSequence(6);
+
+        // Get UI control and necessary child nodes
+        _uiControl = GetNode<Control>("UIControl");
+        if (_uiControl != null)
+        {
+            _attackLabel = _uiControl.GetNode<Label>("Attack_Type");
+            HideCurrentAttack();
+        }
+
+        // Generate initial attack seq
+        _attackSequence = Combat.Instance.GenerateAttackSequence(6);
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -335,6 +335,7 @@ position = Vector2(0, -10)
 shape = SubResource("CircleShape2D_u43aa")
 
 [node name="Attack_Indicator" type="Control" parent="."]
+z_index = 2
 layout_mode = 3
 anchors_preset = 0
 offset_left = -9.0
@@ -343,14 +344,18 @@ offset_right = 8.0
 offset_bottom = -2.0
 
 [node name="Attack_Type" type="Label" parent="Attack_Indicator"]
-layout_mode = 0
-offset_left = -13.0
-offset_top = -6.0
-offset_right = 38.0
-offset_bottom = 22.0
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -36.5
+offset_top = -17.0
+offset_right = 36.5
+offset_bottom = 11.0
+grow_horizontal = 2
 theme_override_fonts/font = ExtResource("3_xauv2")
 theme_override_font_sizes/font_size = 8
-text = "Attack:"
+text = "Placeholder"
 
 [node name="Hat" type="Sprite2D" parent="."]
 z_index = 1

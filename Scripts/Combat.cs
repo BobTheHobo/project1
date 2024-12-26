@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Diagnostics;
+using System.Linq;
 
 // NOTE in terms of how I know something is an enemy, I'm doing it in two ways right now. 1: The enemy.cs script has a method IsEnemy which you can check for 2: The main global class is carrying a list of enemies, which should be added to whenever an enemy is instantiated
 
@@ -37,6 +38,7 @@ public partial class Combat : Node2D
     
     // Returns string of an attack type
     // Static because you don't need an instance
+    // I realized you can just use toString() as well...
     public static string GetAttackString(AttackType attackType)
     {
         switch(attackType)
@@ -88,6 +90,12 @@ public partial class Combat : Node2D
             sequence += GetAttackString(attacks[i]);
         }
         return sequence;
+    }
+
+    // Returns the topmost attack in given AttackType array
+    public static AttackType GetCurrentAttack(AttackType[] attackSeq)
+    {
+        return attackSeq.First();
     }
 
     private void ConnectToSignals()
@@ -265,7 +273,7 @@ public partial class Combat : Node2D
     public void CombatEntered(Node enemyInCombat)
     {
         // TODO: display enemy attack
-        GD.Print("Combat entered with " + enemyInCombat.Name);            
+        // GD.Print("Combat entered with " + enemyInCombat.Name);            
         Slowmo.SlowmoOn(); // Turns on slowmo
     }
 
@@ -273,7 +281,7 @@ public partial class Combat : Node2D
     // Returns game to normal speed
     public void CombatExited(Node enemyInCombat)
     {
-        GD.Print("Combat exited");            
+        // GD.Print("Combat exited");            
         Slowmo.SlowmoOff(); // Turns off slowmo
     }
 

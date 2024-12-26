@@ -121,7 +121,8 @@ shape = SubResource("RectangleShape2D_m8clk")
 position = Vector2(0, -9)
 shape = SubResource("CircleShape2D_y6k4k")
 
-[node name="Attack_Indicator" type="Control" parent="."]
+[node name="UIControl" type="Control" parent="."]
+z_index = 1
 layout_mode = 3
 anchors_preset = 0
 offset_left = -9.0
@@ -129,15 +130,19 @@ offset_top = -24.0
 offset_right = 8.0
 offset_bottom = -2.0
 
-[node name="Attack_Type" type="Label" parent="Attack_Indicator"]
-layout_mode = 0
-offset_left = -13.0
-offset_top = -3.0
-offset_right = 38.0
-offset_bottom = 25.0
+[node name="Attack_Type" type="Label" parent="UIControl"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -36.5
+offset_right = 36.5
+offset_bottom = 28.0
+grow_horizontal = 2
 theme_override_fonts/font = ExtResource("3_ey453")
 theme_override_font_sizes/font_size = 8
-text = "Attack:"
+text = "Placeholder"
+horizontal_alignment = 1
 
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
 [connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]
