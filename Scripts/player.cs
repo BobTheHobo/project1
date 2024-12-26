@@ -111,7 +111,7 @@ public partial class player : CharacterBody2D
                 attackSprite.Visible = true;
                 //((CanvasItem)attackSprite).SetVisible(true);
                 
-                GD.Print("Animation start");
+                // GD.Print("Animation start");
                 attackSprite.SetVisible(true);
                 attackSprite.Play(Attack_Type);
             }
@@ -125,7 +125,7 @@ public partial class player : CharacterBody2D
 
         // Hide attack animation after finished
         attackSprite.SetVisible(false);
-        GD.Print("Animation done");
+        // GD.Print("Animation done");
     }
 
     public void _on_attack_range_body_entered(Node2D body)
