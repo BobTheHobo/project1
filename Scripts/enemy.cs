@@ -22,7 +22,7 @@ public partial class enemy : CharacterBody2D
 
     private void DisplayCurrentAttack()
     {
-        GD.Print("Current enemy attack: ", Combat.GetAttackString(_currentAttack));
+        GD.Print("Current enemy attack: " + Combat.GetAttackString(_currentAttack));
 
         // Overwrites whatever text is currently there
         //string newText = _currentAttack.ToString();
@@ -133,6 +133,7 @@ public partial class enemy : CharacterBody2D
 
         // Generate initial attack seq
         _attackSequence = Combat.Instance.GenerateAttackSequence(6);
+        _currentAttack = Combat.GetCurrentAttack(_attackSequence);
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.

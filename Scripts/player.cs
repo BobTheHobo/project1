@@ -6,9 +6,11 @@ public partial class player : CharacterBody2D
     public int health = 100;
     public bool player_alive = true;
 
-
-    public const float Speed = 200.0f;
-    public const float JumpVelocity = -300.0f;
+    public Vector2 Gravity;
+    public const float DefaultSpeed = 200.0f;
+    public float Speed = DefaultSpeed;
+    public const float DefaultJumpVelocity = -300.0f;
+    public float JumpVelocity = DefaultJumpVelocity;
 
     public string Attack_Type;
     public bool current_attack = false;
@@ -24,14 +26,58 @@ public partial class player : CharacterBody2D
     {
     }
 
+    // Manipulate all necessary variables affected by the slow speed
+    public void SlowPlayer(float slowSpeed)
+    {
+        Speed = DefaultSpeed * slowSpeed; 
+        JumpVelocity = DefaultJumpVelocity * slowSpeed;
+        Gravity = GetGravity() * slowSpeed;
+        animatedSprite.SpeedScale = 1 * slowSpeed;
+        attackSprite.SpeedScale = 1 * slowSpeed;
+    }
+
+    // Properly accounts for changes in velocity when toggling slowmo
+    // If this wasn't here, the previous velocity wouldn't change when entering
+    // slowmo despite gravity and other factors being affected, so 
+    // your character would have a higher velocity than it should, for example 
+    // when falling from a non slowmo into a slowmo range 
+    private void SetVelocityOnSlowToggle(object sender, Slowmo.SlowToggledEventArgs e)
+    {
+        if (e.CurrentlyOn != e.PreviouslyOn)
+        {
+            GD.Print("Is this even tworking?");
+            // Slow was toggled on so change current velocity to reflect it
+            if (e.PreviouslyOn == false)
+            {
+                GD.Print("Previous velocity: " + Velocity.ToString());
+                Velocity *= e.CurrentSpeed;
+                GD.Print("New velocity: " + Velocity.ToString());
+            }
+            // Slow toggled off so give previous speed back
+            else
+            {
+                GD.Print("Previous velocity: " + Velocity.ToString());
+                Velocity /= e.PreviousSpeed;
+                GD.Print("New velocity: " + Velocity.ToString());
+            }
+        }
+    }
+
     public override void _PhysicsProcess(double delta)
     {
-        Godot.Vector2 velocity = Velocity;
+        // Lets slowmo handle delta to allow for slowing/speeding up, etc
+        // Also need to affect speed
+        delta = Slowmo.DeltaHandler(delta);
+        SlowPlayer(Slowmo.CurrentSlowSpeed);
+
+        Vector2 velocity = Velocity;
 
         // Add the gravity.
         if (!IsOnFloor())
         {
-            velocity.Y += GetGravity().Y * (float)delta;
+            // How does this work, isn't this double dipping a change 
+            //  b/c gravity is reduced AND delta is reduced during slowmo???
+            velocity.Y += Gravity.Y * (float)delta;
         }
 
         // Handle Jump.
@@ -42,7 +88,7 @@ public partial class player : CharacterBody2D
 
         // Get the input direction and handle the movement/deceleration.
         // As good practice, you should replace UI actions with custom gameplay actions.
-        Godot.Vector2 direction = Input.GetVector("Left", "Right", "Up", "Down");
+        Vector2 direction = Input.GetVector("Left", "Right", "Up", "Down");
         if (direction.X != 0)
         {
             direction_facing = (int)Mathf.Sign(direction.X);
@@ -87,9 +133,11 @@ public partial class player : CharacterBody2D
             attack_zone.Set("position", position);
         }
 
+        // Set player velocity
         Velocity = velocity;
         MoveAndSlide();
 
+        // Handle idle and non-attacking animations
         if (velocity.X != 0 && !current_attack)
         {
             velocity.X = direction.X * Speed;
@@ -151,6 +199,9 @@ public partial class player : CharacterBody2D
         animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         attackSprite = GetNode<AnimatedSprite2D>("AttackSprite2D");
         attack_zone = GetNode<Area2D>("Attack_Zone").GetChild<CollisionShape2D>(0);
+
+        // Subscribe to slowmo event
+        Slowmo.SlowToggled += SetVelocityOnSlowToggle;
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -53,7 +53,7 @@ public partial class Combat : Node2D
             }
             case AttackType.Heavy:
             {
-                return "Paper";
+                return "Heavy";
             }
             case AttackType.Special:
             {
