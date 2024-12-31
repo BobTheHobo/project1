@@ -1,9 +1,13 @@
 using Godot;
 using System;
+using System.IO;
 
 public partial class enemy : CharacterBody2D
 {
-    private int _speed = 35;
+    private slowableNode _slow;
+    private const float _defaultSpeed = 35;
+    private float _speed = _defaultSpeed;
+    private Vector2 _gravity;
     private bool _playerChase = false;
     private Node2D _player = null; // target player
     private bool _playerInAttackRange = false; //if player is in attack range
@@ -12,6 +16,7 @@ public partial class enemy : CharacterBody2D
     private Combat.AttackType[] _attackSequence;
     private Combat.AttackType _currentAttack;
     private AnimatedSprite2D _sprite;
+    private AnimatedSprite2D _attackSprite;
 
     // Related to enemy UI
     private Control _uiControl;
@@ -50,18 +55,32 @@ public partial class enemy : CharacterBody2D
         }
     }
 
-    private void MoveEnemy()
+    private void MoveEnemy(double delta)
     {
+        Vector2 velocity = Velocity;
         if (!IsOnFloor())
         {
-            Velocity += GetGravity();
+            velocity.Y += _gravity.Y * (float)delta;
         }
+        Velocity = velocity;
+    }
+
+    public void SlowEnemy(float slowFactor)
+    {
+        _speed = _defaultSpeed * slowFactor; 
+        _gravity = GetGravity() * slowFactor;
+        _sprite.SpeedScale = 1 * slowFactor;
+        _attackSprite.SpeedScale = 1 * slowFactor;
     }
 
     public override void _PhysicsProcess(double delta)
     {
+        // Slowmo handling
+        delta = _slow.DeltaHandler(delta);
+        SlowEnemy(_slow.LocalSlowFactor);
+
         HandleAnimations();
-        MoveEnemy();
+        MoveEnemy(delta);
 
         if (_playerChase)
         {
@@ -118,16 +137,19 @@ public partial class enemy : CharacterBody2D
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
+        _slow = new slowableNode();
+
         Main.AddEnemy(this); // Make sure to add every enemy to the global list so that it can be easily tracked by combat and other scripts
 
-        // Get sprite
+        // Get sprites
         _sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
+        _attackSprite = GetNode<AnimatedSprite2D>("AttackSprite2D");
 
         // Get UI control and necessary child nodes
         _uiControl = GetNode<Control>("UIControl");
         if (_uiControl != null)
         {
-            _attackLabel = _uiControl.GetNode<Label>("Attack_Type");
+            _attackLabel = _uiControl.GetNode<Label>("AttackType");
             HideCurrentAttack();
         }
 

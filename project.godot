@@ -20,7 +20,7 @@ config/icon="res://icon.svg"
 SignalBus="*res://Scripts/SignalBus.cs"
 Combat="*res://Scripts/Combat.cs"
 Main="*res://Scripts/Main.cs"
-Slowmo="*res://Scripts/Slowmo.cs"
+SlowmoController="*res://Scripts/SlowmoController.cs"
 
 [display]
 

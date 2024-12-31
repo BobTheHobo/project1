@@ -320,21 +320,21 @@ visible = false
 position = Vector2(0, -10)
 shape = SubResource("RectangleShape2D_tryhn")
 
-[node name="Attack_Zone" type="Area2D" parent="."]
+[node name="AttackZone" type="Area2D" parent="."]
 
-[node name="Damage_Zone" type="CollisionShape2D" parent="Attack_Zone"]
+[node name="DamageZone" type="CollisionShape2D" parent="AttackZone"]
 position = Vector2(12, -10)
 shape = SubResource("RectangleShape2D_uacod")
 disabled = true
 
-[node name="Detection_Zone" type="Area2D" parent="."]
+[node name="DetectionZone" type="Area2D" parent="."]
 visible = false
 
-[node name="Detection_Zone" type="CollisionShape2D" parent="Detection_Zone"]
+[node name="DetectionZone" type="CollisionShape2D" parent="DetectionZone"]
 position = Vector2(0, -10)
 shape = SubResource("CircleShape2D_u43aa")
 
-[node name="Attack_Indicator" type="Control" parent="."]
+[node name="UIControl" type="Control" parent="."]
 z_index = 2
 layout_mode = 3
 anchors_preset = 0
@@ -343,7 +343,7 @@ offset_top = -24.0
 offset_right = 8.0
 offset_bottom = -2.0
 
-[node name="Attack_Type" type="Label" parent="Attack_Indicator"]
+[node name="AttackType" type="Label" parent="UIControl"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -364,5 +364,5 @@ texture = ExtResource("5_0rbec")
 flip_h = true
 
 [connection signal="animation_finished" from="AttackSprite2D" to="." method="_on_attack_sprite_2d_animation_finished"]
-[connection signal="body_entered" from="Detection_Zone" to="." method="_on_attack_range_body_entered"]
-[connection signal="body_exited" from="Detection_Zone" to="." method="_on_attack_range_body_exited"]
+[connection signal="body_entered" from="DetectionZone" to="." method="_on_attack_range_body_entered"]
+[connection signal="body_exited" from="DetectionZone" to="." method="_on_attack_range_body_exited"]

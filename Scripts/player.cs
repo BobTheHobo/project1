@@ -3,6 +3,7 @@ using System;
 
 public partial class player : CharacterBody2D
 {
+    private slowableNode _slow; 
     public int health = 100;
     public bool player_alive = true;
 
@@ -17,7 +18,7 @@ public partial class player : CharacterBody2D
 
     public AnimatedSprite2D animatedSprite;
     private AnimatedSprite2D attackSprite;
-    public CollisionShape2D attack_zone;
+    public CollisionShape2D attackZone;
 
     public int direction_facing = 1; //1 is right, -1 is left
 
@@ -27,13 +28,13 @@ public partial class player : CharacterBody2D
     }
 
     // Manipulate all necessary variables affected by the slow speed
-    public void SlowPlayer(float slowSpeed)
+    public void SlowPlayer(float slowFactor)
     {
-        Speed = DefaultSpeed * slowSpeed; 
-        JumpVelocity = DefaultJumpVelocity * slowSpeed;
-        Gravity = GetGravity() * slowSpeed;
-        animatedSprite.SpeedScale = 1 * slowSpeed;
-        attackSprite.SpeedScale = 1 * slowSpeed;
+        Speed = DefaultSpeed * slowFactor; 
+        JumpVelocity = DefaultJumpVelocity * slowFactor;
+        Gravity = GetGravity() * slowFactor;
+        animatedSprite.SpeedScale = 1 * slowFactor;
+        attackSprite.SpeedScale = 1 * slowFactor;
     }
 
     // Properly accounts for changes in velocity when toggling slowmo
@@ -41,24 +42,23 @@ public partial class player : CharacterBody2D
     // slowmo despite gravity and other factors being affected, so 
     // your character would have a higher velocity than it should, for example 
     // when falling from a non slowmo into a slowmo range 
-    private void SetVelocityOnSlowToggle(object sender, Slowmo.SlowToggledEventArgs e)
+    private void SetVelocityOnSlowToggle(object sender, SlowmoController.GlobalSlowChangedEventArgs e)
     {
         if (e.CurrentlyOn != e.PreviouslyOn)
         {
-            GD.Print("Is this even tworking?");
             // Slow was toggled on so change current velocity to reflect it
             if (e.PreviouslyOn == false)
             {
-                GD.Print("Previous velocity: " + Velocity.ToString());
-                Velocity *= e.CurrentSpeed;
-                GD.Print("New velocity: " + Velocity.ToString());
+                //GD.Print("Previous velocity: " + Velocity.ToString());
+                Velocity *= e.CurrentSlowFactor;
+                // GD.Print("New velocity: " + Velocity.ToString());
             }
             // Slow toggled off so give previous speed back
             else
             {
-                GD.Print("Previous velocity: " + Velocity.ToString());
-                Velocity /= e.PreviousSpeed;
-                GD.Print("New velocity: " + Velocity.ToString());
+                // GD.Print("Previous velocity: " + Velocity.ToString());
+                Velocity /= e.PreviousSlowFactor;
+                // GD.Print("New velocity: " + Velocity.ToString());
             }
         }
     }
@@ -67,8 +67,8 @@ public partial class player : CharacterBody2D
     {
         // Lets slowmo handle delta to allow for slowing/speeding up, etc
         // Also need to affect speed
-        delta = Slowmo.DeltaHandler(delta);
-        SlowPlayer(Slowmo.CurrentSlowSpeed);
+        delta = _slow.DeltaHandler(delta);
+        SlowPlayer(_slow.LocalSlowFactor);
 
         Vector2 velocity = Velocity;
 
@@ -112,9 +112,9 @@ public partial class player : CharacterBody2D
             animatedSprite.FlipH = true;
 
             // Flip attack zone
-            Vector2 position = attack_zone.Position;
+            Vector2 position = attackZone.Position;
             position.X = -Math.Abs(position.X);
-            attack_zone.Set("position", position);
+            attackZone.Set("position", position);
         }
         else
         {
@@ -128,9 +128,9 @@ public partial class player : CharacterBody2D
             animatedSprite.FlipH = false;
 
             // Flip attack zone
-            Vector2 position = attack_zone.Position;
+            Vector2 position = attackZone.Position;
             position.X = Math.Abs(position.X);
-            attack_zone.Set("position", position);
+            attackZone.Set("position", position);
         }
 
         // Set player velocity
@@ -196,12 +196,15 @@ public partial class player : CharacterBody2D
     public override void _Ready()
     {
         Main._player = this; // Sets global reference to this player instance
+
+        _slow = new slowableNode();
+
         animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         attackSprite = GetNode<AnimatedSprite2D>("AttackSprite2D");
-        attack_zone = GetNode<Area2D>("Attack_Zone").GetChild<CollisionShape2D>(0);
+        attackZone = GetNode<Area2D>("AttackZone").GetChild<CollisionShape2D>(0);
 
         // Subscribe to slowmo event
-        Slowmo.SlowToggled += SetVelocityOnSlowToggle;
+        SlowmoController.GlobalSlowChanged += SetVelocityOnSlowToggle;
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
