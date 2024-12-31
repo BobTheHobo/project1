@@ -37,30 +37,12 @@ public partial class player : CharacterBody2D
         attackSprite.SpeedScale = 1 * slowFactor;
     }
 
-    // Properly accounts for changes in velocity when toggling slowmo
-    // If this wasn't here, the previous velocity wouldn't change when entering
-    // slowmo despite gravity and other factors being affected, so 
-    // your character would have a higher velocity than it should, for example 
-    // when falling from a non slowmo into a slowmo range 
-    private void SetVelocityOnSlowToggle(object sender, SlowmoController.GlobalSlowChangedEventArgs e)
+    // Handle slowmo changes
+    private void HandleSlowmoChange(object sender, SlowmoController.GlobalSlowChangedEventArgs e)
     {
-        if (e.CurrentlyOn != e.PreviouslyOn)
-        {
-            // Slow was toggled on so change current velocity to reflect it
-            if (e.PreviouslyOn == false)
-            {
-                //GD.Print("Previous velocity: " + Velocity.ToString());
-                Velocity *= e.CurrentSlowFactor;
-                // GD.Print("New velocity: " + Velocity.ToString());
-            }
-            // Slow toggled off so give previous speed back
-            else
-            {
-                // GD.Print("Previous velocity: " + Velocity.ToString());
-                Velocity /= e.PreviousSlowFactor;
-                // GD.Print("New velocity: " + Velocity.ToString());
-            }
-        }
+        // Change velocity according to slowmo
+        Vector2 newVelocity = _slow.CalcVelocityOnSlowChange(e, Velocity);
+        Velocity = newVelocity;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -204,7 +186,7 @@ public partial class player : CharacterBody2D
         attackZone = GetNode<Area2D>("AttackZone").GetChild<CollisionShape2D>(0);
 
         // Subscribe to slowmo event
-        SlowmoController.GlobalSlowChanged += SetVelocityOnSlowToggle;
+        SlowmoController.GlobalSlowChanged += HandleSlowmoChange;
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.

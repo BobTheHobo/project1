@@ -59,6 +59,37 @@ public partial class slowableNode : Node
 		}
 	}
 
+	/*
+     Properly accounts for changes in velocity when changing slowmo
+     If this wasn't here, the previous velocity wouldn't change when entering
+     slowmo despite gravity and other factors being affected, so 
+     your character would have a higher velocity than it should, for example 
+     when falling from a non slowmo into a slowmo range 
+	*/
+    public Vector2 CalcVelocityOnSlowChange(_controller.GlobalSlowChangedEventArgs e, Vector2 objVelocity)
+    {
+		Vector2 newVelocity = objVelocity;
+        if (e.CurrentlyOn != e.PreviouslyOn)
+        {
+            // Slow was toggled on so change current velocity to reflect it
+            if (e.PreviouslyOn == false)
+            {
+                //GD.Print("Previous velocity: " + Velocity.ToString());
+                newVelocity *= e.CurrentSlowFactor;
+                // GD.Print("New velocity: " + Velocity.ToString());
+            }
+            // Slow toggled off so give previous speed back
+            else
+            {
+                // GD.Print("Previous velocity: " + Velocity.ToString());
+                newVelocity /= e.PreviousSlowFactor;
+                // GD.Print("New velocity: " + Velocity.ToString());
+            }
+        }
+
+		return newVelocity;
+    }
+
 
 	// Local slowmo off (reset this node's speed to normal exec speed)
 	public void LocalSlowmoOff()

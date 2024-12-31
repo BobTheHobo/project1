@@ -5,8 +5,10 @@ using System.IO;
 public partial class enemy : CharacterBody2D
 {
     private slowableNode _slow;
-    private const float _defaultSpeed = 35;
-    private float _speed = _defaultSpeed;
+
+    public const float DefaultSpeed = 100.0f;
+    public float Speed = DefaultSpeed;
+
     private Vector2 _gravity;
     private bool _playerChase = false;
     private Node2D _player = null; // target player
@@ -58,19 +60,54 @@ public partial class enemy : CharacterBody2D
     private void MoveEnemy(double delta)
     {
         Vector2 velocity = Velocity;
+
+        // Vertical movement
         if (!IsOnFloor())
         {
             velocity.Y += _gravity.Y * (float)delta;
         }
+
+        // Chase Player
+        if (_playerChase)
+        {
+            // direction: 1 is right, -1 is left, 0 is stationary
+            int direction = Mathf.Sign(_player.Position.X - Position.X);
+            if (direction != 0)
+            {
+                velocity.X = direction * Speed;
+            }
+        }
+        else // Slow down horizontally
+        {
+            velocity.X = Mathf.MoveToward(Velocity.X, 0, Speed);
+        }
+
+        // Flip model
+        if (velocity.X < 0) // Facing right
+        {
+            _sprite.FlipH = true;
+        }
+        else if (velocity.X > 0) // Facing left
+        {
+            _sprite.FlipH = false;
+        }
+
         Velocity = velocity;
     }
 
     public void SlowEnemy(float slowFactor)
     {
-        _speed = _defaultSpeed * slowFactor; 
+        Speed = DefaultSpeed * slowFactor; 
         _gravity = GetGravity() * slowFactor;
         _sprite.SpeedScale = 1 * slowFactor;
         _attackSprite.SpeedScale = 1 * slowFactor;
+    }
+
+    private void HandleSlowmoChange(object sender, SlowmoController.GlobalSlowChangedEventArgs e)
+    {
+        // Change velocity according to slowmo
+        Vector2 newVelocity = _slow.CalcVelocityOnSlowChange(e, Velocity);
+        Velocity = newVelocity;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -79,23 +116,9 @@ public partial class enemy : CharacterBody2D
         delta = _slow.DeltaHandler(delta);
         SlowEnemy(_slow.LocalSlowFactor);
 
-        HandleAnimations();
         MoveEnemy(delta);
 
-        if (_playerChase)
-        {
-            float newPos = Position.X + (_player.Position.X - Position.X) / _speed;
-            Position = Position with { X = newPos };
-
-            if (_player.Position.X - Position.X < 0)
-            {
-                _sprite.FlipH = true;
-            }
-            else
-            {
-                _sprite.FlipH = false;
-            }
-        }
+        HandleAnimations();
 
         MoveAndSlide();
     }
@@ -156,6 +179,9 @@ public partial class enemy : CharacterBody2D
         // Generate initial attack seq
         _attackSequence = Combat.Instance.GenerateAttackSequence(6);
         _currentAttack = Combat.GetCurrentAttack(_attackSequence);
+        
+        // Subscribe to slowmo event
+        SlowmoController.GlobalSlowChanged += HandleSlowmoChange;
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
