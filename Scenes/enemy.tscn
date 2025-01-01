@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://dj3fdpeiw6km0"]
+[gd_scene load_steps=27 format=3 uid="uid://dj3fdpeiw6km0"]
 
 [ext_resource type="Script" path="res://Scripts/enemy.cs" id="1_hkrnh"]
 [ext_resource type="Texture2D" uid="uid://cd4x4fkq0lt83" path="res://brackeys_platformer_assets/brackeys_platformer_assets/sprites/slime_green.png" id="2_qdlvr"]
@@ -160,14 +160,17 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4nw6y"]
 size = Vector2(13, 13)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_or0gv"]
+size = Vector2(12, 8)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_m8clk"]
 size = Vector2(17, 15)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8chh7"]
 radius = 55.0818
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_y6k4k"]
-radius = 34.1321
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2oyq6"]
+size = Vector2(36.645, 20)
 
 [node name="Enemy" type="CharacterBody2D"]
 position = Vector2(0, 2)
@@ -190,6 +193,13 @@ offset = Vector2(6, -11)
 position = Vector2(-0.5, -8.5)
 shape = SubResource("RectangleShape2D_4nw6y")
 
+[node name="AttackZone" type="Area2D" parent="."]
+
+[node name="DamageZone" type="CollisionShape2D" parent="AttackZone"]
+position = Vector2(12, -10)
+shape = SubResource("RectangleShape2D_or0gv")
+disabled = true
+
 [node name="EnemyHitbox" type="Area2D" parent="."]
 
 [node name="HitboxCollisionShape" type="CollisionShape2D" parent="EnemyHitbox"]
@@ -201,14 +211,14 @@ collision_layer = 2
 collision_mask = 2
 
 [node name="DetectionCollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
-position = Vector2(0, -7)
+position = Vector2(0, -9)
 shape = SubResource("CircleShape2D_8chh7")
 
 [node name="AttackRange" type="Area2D" parent="."]
 
 [node name="AttackRangeCollisionShape" type="CollisionShape2D" parent="AttackRange"]
-position = Vector2(0, -9)
-shape = SubResource("CircleShape2D_y6k4k")
+position = Vector2(7.7, -10)
+shape = SubResource("RectangleShape2D_2oyq6")
 
 [node name="UIControl" type="Control" parent="."]
 z_index = 1

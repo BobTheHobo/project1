@@ -17,9 +17,11 @@ public partial class slowableNode : Node
 {
 	public float LocalSlowFactor {get; private set;} = _controller.NormalExecFactor;
 	public bool LocalSlowIsOn {get; private set;} = false;
+	private Node _parentObj;
 
-	public slowableNode()
+	public slowableNode(Node parentObj)
 	{
+		_parentObj = parentObj;
 		_controller.GlobalSlowChanged += HandleSlowChange;
 		GD.Print("added");
 	}
@@ -69,27 +71,27 @@ public partial class slowableNode : Node
     public Vector2 CalcVelocityOnSlowChange(_controller.GlobalSlowChangedEventArgs e, Vector2 objVelocity)
     {
 		Vector2 newVelocity = objVelocity;
-        if (e.CurrentlyOn != e.PreviouslyOn)
+
+        if (e.CurrentlyOn != e.PreviouslyOn) // slow toggled
         {
-            // Slow was toggled on so change current velocity to reflect it
+            // change current velocity to reflect toggle on
             if (e.PreviouslyOn == false)
             {
-                //GD.Print("Previous velocity: " + Velocity.ToString());
                 newVelocity *= e.CurrentSlowFactor;
-                // GD.Print("New velocity: " + Velocity.ToString());
             }
             // Slow toggled off so give previous speed back
             else
             {
-                // GD.Print("Previous velocity: " + Velocity.ToString());
                 newVelocity /= e.PreviousSlowFactor;
-                // GD.Print("New velocity: " + Velocity.ToString());
             }
         }
+		else if (e.CurrentlyOn && e.PreviouslyOn) // slow continued
+		{
+			newVelocity *= e.CurrentSlowFactor;
+		}
 
 		return newVelocity;
     }
-
 
 	// Local slowmo off (reset this node's speed to normal exec speed)
 	public void LocalSlowmoOff()

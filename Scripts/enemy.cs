@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Diagnostics;
 using System.IO;
 
 public partial class enemy : CharacterBody2D
@@ -8,6 +9,7 @@ public partial class enemy : CharacterBody2D
 
     public const float DefaultSpeed = 100.0f;
     public float Speed = DefaultSpeed;
+    public int direction_facing = 1; //1 is right, -1 is left
 
     private Vector2 _gravity;
     private bool _playerChase = false;
@@ -19,6 +21,8 @@ public partial class enemy : CharacterBody2D
     private Combat.AttackType _currentAttack;
     private AnimatedSprite2D _sprite;
     private AnimatedSprite2D _attackSprite;
+    private CollisionShape2D _attackZone;
+    private CollisionShape2D _attackRange;
 
     // Related to enemy UI
     private Control _uiControl;
@@ -71,10 +75,10 @@ public partial class enemy : CharacterBody2D
         if (_playerChase)
         {
             // direction: 1 is right, -1 is left, 0 is stationary
-            int direction = Mathf.Sign(_player.Position.X - Position.X);
-            if (direction != 0)
+            direction_facing = Mathf.Sign(_player.Position.X - Position.X);
+            if (direction_facing != 0)
             {
-                velocity.X = direction * Speed;
+                velocity.X = direction_facing * Speed;
             }
         }
         else // Slow down horizontally
@@ -85,14 +89,77 @@ public partial class enemy : CharacterBody2D
         // Flip model
         if (velocity.X < 0) // Facing right
         {
-            _sprite.FlipH = true;
+            direction_facing = -1;
+
+            FlipShape(_attackZone, -1);
+            FlipShape(_attackRange, -1);
+            FlipSprite(_attackSprite, -1);
+            FlipSprite(_sprite, -1);
         }
         else if (velocity.X > 0) // Facing left
         {
-            _sprite.FlipH = false;
+            direction_facing = 1;
+
+            FlipShape(_attackZone, 1);
+            FlipShape(_attackRange, 1);
+            FlipSprite(_attackSprite, 1);
+            FlipSprite(_sprite, 1);
         }
 
         Velocity = velocity;
+    }
+
+    private void FlipSprite(AnimatedSprite2D sprite)
+    {
+        FlipSprite(sprite, direction_facing);
+    }
+
+    // Only works with animatedsprite2d right now but we can always fix later
+    private void FlipSprite(AnimatedSprite2D sprite, int direction)
+    {
+        if (direction >= 0)
+        {
+            sprite.FlipH = false;
+
+            Vector2 spriteOffset = sprite.Offset;
+            if (spriteOffset.X != 0)
+            {
+                spriteOffset.X = -Math.Abs(spriteOffset.X);
+                sprite.Set("offset", spriteOffset);
+            }
+        }
+        else
+        {
+            sprite.FlipH = true;
+            Vector2 spriteOffset = sprite.Offset;
+
+            if (spriteOffset.X != 0)
+            {
+                spriteOffset.X = Math.Abs(spriteOffset.X);
+                sprite.Set("offset", spriteOffset);
+            }
+        }
+    }
+
+    private void FlipShape(CollisionShape2D thing)
+    {
+        FlipShape(thing, direction_facing);
+    }
+
+    private void FlipShape(CollisionShape2D thing, int direction)
+    {
+        if (direction >= 0)
+        {
+            Vector2 position = thing.Position;
+            position.X = Math.Abs(position.X);
+            thing.Set("position", position);
+        }
+        else
+        {
+            Vector2 position = thing.Position;
+            position.X = -1 * Math.Abs(position.X);
+            thing.Set("position", position);
+        }
     }
 
     public void SlowEnemy(float slowFactor)
@@ -160,13 +227,15 @@ public partial class enemy : CharacterBody2D
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        _slow = new slowableNode();
+        _slow = new slowableNode(this);
 
         Main.AddEnemy(this); // Make sure to add every enemy to the global list so that it can be easily tracked by combat and other scripts
 
         // Get sprites
         _sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         _attackSprite = GetNode<AnimatedSprite2D>("AttackSprite2D");
+        _attackZone = GetNode<Area2D>("AttackZone").GetChild<CollisionShape2D>(0);
+        _attackRange = GetNode<Area2D>("AttackRange").GetChild<CollisionShape2D>(0);
 
         // Get UI control and necessary child nodes
         _uiControl = GetNode<Control>("UIControl");

@@ -40,7 +40,7 @@ public partial class player : CharacterBody2D
     // Handle slowmo changes
     private void HandleSlowmoChange(object sender, SlowmoController.GlobalSlowChangedEventArgs e)
     {
-        // Change velocity according to slowmo
+        // calculate velocity according to slowmo
         Vector2 newVelocity = _slow.CalcVelocityOnSlowChange(e, Velocity);
         Velocity = newVelocity;
     }
@@ -179,7 +179,7 @@ public partial class player : CharacterBody2D
     {
         Main._player = this; // Sets global reference to this player instance
 
-        _slow = new slowableNode();
+        _slow = new slowableNode(this);
 
         animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         attackSprite = GetNode<AnimatedSprite2D>("AttackSprite2D");
