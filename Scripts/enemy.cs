@@ -1,7 +1,10 @@
 using Godot;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 public partial class enemy : CharacterBody2D
 {
@@ -17,8 +20,9 @@ public partial class enemy : CharacterBody2D
     private bool _playerInAttackRange = false; //if player is in attack range
     private int _direction = 1;
     private Random _rng = new Random();
-    private Combat.AttackType[] _attackSequence;
+    private Stack<Combat.AttackType> _attackSequence;
     private Combat.AttackType _currentAttack;
+    private bool _isAttacking = false;
     private AnimatedSprite2D _sprite;
     private AnimatedSprite2D _attackSprite;
     private CollisionShape2D _attackZone;
@@ -42,6 +46,12 @@ public partial class enemy : CharacterBody2D
 
         _attackLabel.SetVisible(true);
     }
+
+    private void UpdateAttackDisplay()
+    {
+        string newText = "Attack: " + _currentAttack.ToString();
+        _attackLabel.SetText(newText);
+    }
     
     private void HideCurrentAttack()
     {
@@ -54,10 +64,47 @@ public partial class enemy : CharacterBody2D
         if (_playerInAttackRange)
         {
             _sprite.Play("attack");
+            HandleAttacks();
         }
         else
         {
             _sprite.Play("idle");
+        }
+    }
+
+    // Plays animations and handles attacks
+    private void HandleAttacks()
+    {
+        if (!_isAttacking && _currentAttack != Combat.AttackType.None)
+        {
+            _isAttacking = true;
+            switch (_currentAttack)
+            {
+                case Combat.AttackType.Light:
+                    _attackSprite.Play("Basic Attack");
+                    break;
+                case Combat.AttackType.Heavy:
+                    _attackSprite.Play("Heavy Attack");
+                    break;
+                case Combat.AttackType.Special:
+                    _attackSprite.Play("Special Attack");
+                    break;
+            }
+        }
+        UpdateAttackDisplay();
+    }
+
+    // Signal called when attack sprite animation is done
+    public void _on_attack_sprite_2d_animation_finished()
+    {
+        _isAttacking = false;
+        // Set next attack
+        _currentAttack = Combat.GetNextAttack(_attackSequence);
+        GD.Print("Next attack: " + _currentAttack.ToString());
+
+        if (_currentAttack == Combat.AttackType.None)
+        {
+            _attackSprite.Visible = false;
         }
     }
 
@@ -124,7 +171,7 @@ public partial class enemy : CharacterBody2D
             Vector2 spriteOffset = sprite.Offset;
             if (spriteOffset.X != 0)
             {
-                spriteOffset.X = -Math.Abs(spriteOffset.X);
+                spriteOffset.X = Math.Abs(spriteOffset.X);
                 sprite.Set("offset", spriteOffset);
             }
         }
@@ -135,7 +182,7 @@ public partial class enemy : CharacterBody2D
 
             if (spriteOffset.X != 0)
             {
-                spriteOffset.X = Math.Abs(spriteOffset.X);
+                spriteOffset.X = -Math.Abs(spriteOffset.X);
                 sprite.Set("offset", spriteOffset);
             }
         }

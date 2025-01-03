@@ -68,15 +68,16 @@ public partial class Combat : Node2D
         } 
     }
     
-    // Generates an attack sequence given a number of attacks
-    // Returns an array of AttackTypes
+    // Generates an attack sequence stack given a number of attacks
+    // Returns a stack of AttackTypes
     // Can't be static because we need to reference the same RNG instance?
-    public AttackType[] GenerateAttackSequence(int numAttacks)
+    public Stack<AttackType> GenerateAttackSequence(int numAttacks)
     {
-        AttackType[] attackSequence = new Combat.AttackType[numAttacks];
+        Stack<AttackType> attackSequence = new();
+         
         for (int i = 0; i < numAttacks; i++)
         {
-            attackSequence[i] = (AttackType)_rng.Next(1, 4); // Generate random attacks between 1 and 3
+            attackSequence.Push((AttackType)_rng.Next(1,4));
         }
         GD.Print("Attack sequence generated:", GetAttackSequenceString(attackSequence));
         return attackSequence;
@@ -84,20 +85,40 @@ public partial class Combat : Node2D
 
     // Gets a string of attack types concatenated
     // Static because we don't need to reference a class instance
-    public static string GetAttackSequenceString(AttackType[] attacks)
+    public static string GetAttackSequenceString(Stack<AttackType> attacks)
     {
+        AttackType[] attacksArr = attacks.ToArray<AttackType>();
         string sequence = "";
-        for (int i = 0; i < attacks.Length; i++)
+        for (int i = 0; i < attacks.Count; i++)
         {
-            sequence += GetAttackString(attacks[i]);
+            sequence += GetAttackString(attacksArr[i]);
         }
         return sequence;
     }
 
-    // Returns the topmost attack in given AttackType array
-    public static AttackType GetCurrentAttack(AttackType[] attackSeq)
+    // Returns the topmost attack in given AttackType stack
+    public static AttackType GetCurrentAttack(Stack<AttackType> attackSeq)
     {
-        return attackSeq.First();
+        if (attackSeq.Any()) // attackSeq is empty
+            return attackSeq.Peek();
+        else
+        {
+            return AttackType.None;
+        }
+    }
+
+    // Pops top attack off and return the next one
+    public static AttackType GetNextAttack(Stack<AttackType> attackSeq)
+    {
+        if (attackSeq.Count >= 2) // attackSeq still has at least 2 attacks
+        {
+            attackSeq.Pop();
+            return attackSeq.Peek();
+        }
+        else
+        {
+            return AttackType.None;
+        }
     }
 
     private void ConnectToSignals()
