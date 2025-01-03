@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -13,7 +14,8 @@ public partial class Combat : Node2D
     public static Combat Instance { get; private set; }
     private Node2D _player; // current player
     private Node2D _targetedBody = null; // body that the player is currently targeting
-    private bool _inEnemyRange = false; // whether or not player is in range of an enemy
+    private List<Node2D> _enemiesWithPlayerInAttackRange = new();
+    private bool _isInEnemyRange = false; // whether or not player is in attack range of an enemy
     private bool _lockedOn = false; // whether or not player is locked on to a target
     private Random _rng = new Random(); // Random num generator
 
@@ -172,10 +174,11 @@ public partial class Combat : Node2D
     //  to the mouse and lock onto that,
     //else will just use whatever is nearest to the player
     //TODO: Might want to have ability to lock onto things other than enemies
-    private void HandleLockOnToEnemy(Boolean mouseLock)
+    private void HandleLockOnToEnemy(bool mouseLock)
     {
         enemy targetedEnemy = null;
 
+        // right now mouselock is default
         if (mouseLock) // Using mouselock
         {
             // Get mouse position method works b/c Combat inherits from Node2D (inheriting JUST NODE WON'T HAVE THIS METHOD)
@@ -207,6 +210,7 @@ public partial class Combat : Node2D
 
         // LockOnToTarget will handle if enemy was null
         LockOnToTarget(targetedEnemy);
+        HandleCombatSlowmo();
     }
     
     // Locks on to a given target
@@ -216,10 +220,17 @@ public partial class Combat : Node2D
             LockOff();
             GD.Print("No target to lock onto");
         } else {
-            _lockedOn = true;
-            SetTarget(target);
-            attachLockOnUi(target);
-            GD.Print("Player locked on to: ", target.Name);
+            if (target == _targetedBody)
+            {
+                LockOff();
+                GD.Print("Lock on toggled off");
+            } else
+            {
+                _lockedOn = true;
+                SetTarget(target);
+                attachLockOnUi(target);
+                GD.Print("Player locked on to: ", target.Name);
+            }
         }
     }
 
@@ -270,19 +281,39 @@ public partial class Combat : Node2D
 
     // Called when a player enters into an enemy's attack range
     // Displays current enemy attack and slows down the game
-    public void CombatEntered(Node enemyInCombat)
+    public void CombatEntered(Node2D enemyInCombat)
     {
         // TODO: display enemy attack
         // GD.Print("Combat entered with " + enemyInCombat.Name);            
-        SlowmoController.GlobalSlowmoOn(); // Turns on slowmo
+            // SlowmoController.GlobalSlowmoOn(); // Turns on slowmo
+        _isInEnemyRange = true;
+        _enemiesWithPlayerInAttackRange.Add(enemyInCombat);
+        HandleCombatSlowmo();
     }
 
     // Called when a player exits enemy's attack range or when player flees
     // Returns game to normal speed
-    public void CombatExited(Node enemyInCombat)
+    public void CombatExited(Node2D enemyInCombat)
     {
         // GD.Print("Combat exited");            
-        SlowmoController.GlobalSlowmoOff(); // Turns off slowmo
+        _enemiesWithPlayerInAttackRange.Remove(enemyInCombat);
+        if (!_enemiesWithPlayerInAttackRange.Any()) // empty list
+        {
+            _isInEnemyRange = false;
+        }
+        HandleCombatSlowmo();
+    }
+
+    private void HandleCombatSlowmo()
+    {
+        if (_lockedOn && _enemiesWithPlayerInAttackRange.Contains<Node2D>(_targetedBody))
+        {
+            SlowmoController.GlobalSlowmoOn();
+        }
+        else
+        {
+            SlowmoController.GlobalSlowmoOff();
+        }
     }
 
     // Called when the node enters the scene tree for the first time.
