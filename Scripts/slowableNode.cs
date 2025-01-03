@@ -19,6 +19,13 @@ public partial class slowableNode : Node
 	public bool LocalSlowIsOn {get; private set;} = false;
 	private Node _parentObj;
 
+	public event EventHandler<_controller.SlowChangedEventArgs> LocalSlowChanged;
+
+	protected void OnLocalSlowChanged(_controller.SlowChangedEventArgs e)
+	{
+		LocalSlowChanged?.Invoke(this, e);
+	}
+
 	public slowableNode(Node parentObj)
 	{
 		_parentObj = parentObj;
@@ -40,16 +47,52 @@ public partial class slowableNode : Node
 	// Turn local slowmo on
 	public void SetLocalSlowmo(float factor)
 	{
-		// Set speed
-		LocalSlowFactor = factor;
-		
-		// normalexecfactor is basically just turning off slow 
-		LocalSlowIsOn = factor != _controller.NormalExecFactor;
+		// setting to normalexecfactor is basically just turning off slow 
+		bool newLocalSlowIsOn = factor != _controller.NormalExecFactor;
+
+		if (newLocalSlowIsOn) 
+		{
+			// Send out event that slow was changed
+			_controller.SlowChangedEventArgs args = new()
+			{
+				PreviousSlowFactor = LocalSlowFactor,
+				CurrentSlowFactor = factor,
+				PreviouslyOn = LocalSlowIsOn,
+				CurrentlyOn = newLocalSlowIsOn
+			};
+			OnLocalSlowChanged(args);
+
+			LocalSlowFactor = factor;
+			
+			LocalSlowIsOn = true;
+		}
+		else
+		{
+			LocalSlowmoOff();
+		}
+
+	}
+
+	// Local slowmo off (reset this node's speed to normal exec speed)
+	public void LocalSlowmoOff()
+	{
+		// Send out event that slow was toggled
+        _controller.SlowChangedEventArgs args = new()
+        {
+            PreviousSlowFactor = LocalSlowFactor,
+            CurrentSlowFactor = _controller.NormalExecFactor,
+            PreviouslyOn = LocalSlowIsOn,
+            CurrentlyOn = false
+        };
+		OnLocalSlowChanged(args);
+
+		LocalSlowFactor = _controller.NormalExecFactor;
+		LocalSlowIsOn = false;
 	}
 
 	// Triggered whenever slow is globally changed 
 	// WILL OVERWRITE LOCAL SLOW !!
-	private void HandleSlowChange(object sender, _controller.GlobalSlowChangedEventArgs e)
+	private void HandleSlowChange(object sender, _controller.SlowChangedEventArgs e)
 	{
 		if (e.CurrentlyOn)
 		{
@@ -68,7 +111,7 @@ public partial class slowableNode : Node
      your character would have a higher velocity than it should, for example 
      when falling from a non slowmo into a slowmo range 
 	*/
-    public Vector2 CalcVelocityOnSlowChange(_controller.GlobalSlowChangedEventArgs e, Vector2 objVelocity)
+    public Vector2 CalcVelocityOnSlowChange(_controller.SlowChangedEventArgs e, Vector2 objVelocity)
     {
 		Vector2 newVelocity = objVelocity;
 
@@ -92,13 +135,6 @@ public partial class slowableNode : Node
 
 		return newVelocity;
     }
-
-	// Local slowmo off (reset this node's speed to normal exec speed)
-	public void LocalSlowmoOff()
-	{
-		LocalSlowFactor = _controller.NormalExecFactor;
-		LocalSlowIsOn = false;
-	}
 
 	// Handles delta scaling
 	public double DeltaHandler(double delta)

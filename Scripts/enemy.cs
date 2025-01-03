@@ -23,6 +23,7 @@ public partial class enemy : CharacterBody2D
     private Stack<Combat.AttackType> _attackSequence;
     private Combat.AttackType _currentAttack;
     private bool _isAttacking = false;
+    private float cooldown = 1; // Cooldown between attacks
     private AnimatedSprite2D _sprite;
     private AnimatedSprite2D _attackSprite;
     private CollisionShape2D _attackZone;
@@ -97,15 +98,21 @@ public partial class enemy : CharacterBody2D
     // Signal called when attack sprite animation is done
     public void _on_attack_sprite_2d_animation_finished()
     {
-        _isAttacking = false;
-        // Set next attack
-        _currentAttack = Combat.GetNextAttack(_attackSequence);
-        GD.Print("Next attack: " + _currentAttack.ToString());
-
-        if (_currentAttack == Combat.AttackType.None)
+        // use custom timer for cooldown (to account for slowdown as well)
+        CustomTimer timer = new(_slow, cooldown);
+        AddChild(timer);
+        timer.CustomTimerTimeout += () =>
         {
-            _attackSprite.Visible = false;
-        }
+            _isAttacking = false;
+            // Set next attack
+            _currentAttack = Combat.GetNextAttack(_attackSequence);
+            GD.Print("Next attack: " + _currentAttack.ToString());
+
+            if (_currentAttack == Combat.AttackType.None)
+            {
+                _attackSprite.Visible = false;
+            }
+        };
     }
 
     private void MoveEnemy(double delta)
@@ -217,7 +224,7 @@ public partial class enemy : CharacterBody2D
         _attackSprite.SpeedScale = 1 * slowFactor;
     }
 
-    private void HandleSlowmoChange(object sender, SlowmoController.GlobalSlowChangedEventArgs e)
+    private void HandleSlowmoChange(object sender, SlowmoController.SlowChangedEventArgs e)
     {
         // Change velocity according to slowmo
         Vector2 newVelocity = _slow.CalcVelocityOnSlowChange(e, Velocity);

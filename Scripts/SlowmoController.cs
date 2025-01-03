@@ -12,7 +12,7 @@ public partial class SlowmoController : Node
 	public static float GlobalSlowFactor { get; private set; } = DefaultSlowFactor;
 	public static bool GlobalSlowIsOn { get; private set; } = false;
 
-	public class GlobalSlowChangedEventArgs : EventArgs
+	public class SlowChangedEventArgs : EventArgs
 	{
 		public float PreviousSlowFactor { get; set; }
 		public float CurrentSlowFactor { get; set; }
@@ -21,9 +21,9 @@ public partial class SlowmoController : Node
 		public Vector2 ObjVelocity { get; set; }
 	}
 	
-	public static event EventHandler<GlobalSlowChangedEventArgs> GlobalSlowChanged;
+	public static event EventHandler<SlowChangedEventArgs> GlobalSlowChanged;
 
-	protected static void OnGlobalSlowChanged(GlobalSlowChangedEventArgs e)
+	protected static void OnGlobalSlowChanged(SlowChangedEventArgs e)
 	{
 		// Invokes event (basically sends signal that this happened)
         GlobalSlowChanged?.Invoke(null, e);
@@ -41,7 +41,7 @@ public partial class SlowmoController : Node
 		Debug.Assert(factor != NormalExecFactor, "Slow factor cannot be normal exec factor, use the slowmo off method");
 
 		// Send out event that slow was toggled
-        GlobalSlowChangedEventArgs args = new()
+        SlowChangedEventArgs args = new()
         {
             PreviousSlowFactor = GlobalSlowFactor,
             CurrentSlowFactor = factor,
@@ -60,7 +60,7 @@ public partial class SlowmoController : Node
 	public static void GlobalSlowmoOff()
 	{
 		// Send out event that slow was toggled
-        GlobalSlowChangedEventArgs args = new()
+        SlowChangedEventArgs args = new()
         {
             PreviousSlowFactor = GlobalSlowFactor,
             CurrentSlowFactor = NormalExecFactor,

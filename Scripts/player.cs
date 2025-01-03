@@ -38,7 +38,7 @@ public partial class player : CharacterBody2D
     }
 
     // Handle slowmo changes
-    private void HandleSlowmoChange(object sender, SlowmoController.GlobalSlowChangedEventArgs e)
+    private void HandleSlowmoChange(object sender, SlowmoController.SlowChangedEventArgs e)
     {
         // calculate velocity according to slowmo
         Vector2 newVelocity = _slow.CalcVelocityOnSlowChange(e, Velocity);
