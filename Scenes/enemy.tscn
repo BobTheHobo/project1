@@ -1,9 +1,10 @@
-[gd_scene load_steps=27 format=3 uid="uid://dj3fdpeiw6km0"]
+[gd_scene load_steps=28 format=3 uid="uid://dj3fdpeiw6km0"]
 
 [ext_resource type="Script" path="res://Scripts/enemy.cs" id="1_hkrnh"]
 [ext_resource type="Texture2D" uid="uid://cd4x4fkq0lt83" path="res://brackeys_platformer_assets/brackeys_platformer_assets/sprites/slime_green.png" id="2_qdlvr"]
 [ext_resource type="Texture2D" uid="uid://c1oks081qit2a" path="res://Assets/attacks-Sheet.png" id="3_5mi24"]
 [ext_resource type="FontFile" uid="uid://cah7dwef18jbi" path="res://brackeys_platformer_assets/brackeys_platformer_assets/fonts/PixelOperator8.ttf" id="3_ey453"]
+[ext_resource type="PackedScene" uid="uid://cpcxs2lp5o34h" path="res://Scenes/UI/enemyAttackTimer.tscn" id="4_8lehy"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7kxpm"]
 atlas = ExtResource("2_qdlvr")
@@ -223,25 +224,39 @@ shape = SubResource("RectangleShape2D_2oyq6")
 [node name="UIControl" type="Control" parent="."]
 z_index = 1
 layout_mode = 3
-anchors_preset = 0
-offset_left = -9.0
-offset_top = -24.0
-offset_right = 8.0
-offset_bottom = -2.0
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -25.0
+offset_top = -25.0
+offset_right = 25.0
+offset_bottom = -15.0
+grow_horizontal = 2
 
-[node name="AttackType" type="Label" parent="UIControl"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UIControl"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -36.5
-offset_right = 36.5
-offset_bottom = 28.0
+offset_left = -42.5
+offset_right = 42.5
+offset_bottom = 8.0
 grow_horizontal = 2
+
+[node name="Control" type="Control" parent="UIControl/HBoxContainer"]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 2
+
+[node name="AttackTimer" parent="UIControl/HBoxContainer/Control" instance=ExtResource("4_8lehy")]
+layout_mode = 0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="AttackType" type="Label" parent="UIControl/HBoxContainer"]
+layout_mode = 2
 theme_override_fonts/font = ExtResource("3_ey453")
 theme_override_font_sizes/font_size = 8
 text = "Placeholder"
-horizontal_alignment = 1
 
 [connection signal="animation_finished" from="AttackSprite2D" to="." method="_on_attack_sprite_2d_animation_finished"]
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]

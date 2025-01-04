@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://cpcxs2lp5o34h"]
+
+[ext_resource type="Texture2D" uid="uid://bkqsee07tyj23" path="res://Assets/progress.png" id="1_sw2c8"]
+
+[node name="TextureProgressBar" type="TextureProgressBar"]
+offset_right = 32.0
+offset_bottom = 32.0
+scale = Vector2(0.25, 0.25)
+fill_mode = 4
+texture_under = ExtResource("1_sw2c8")
+texture_progress = ExtResource("1_sw2c8")
+tint_under = Color(0.855469, 0.855469, 0.855469, 0.698039)
+tint_progress = Color(0.125, 1, 0, 1)

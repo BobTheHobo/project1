@@ -32,9 +32,35 @@ public partial class enemy : CharacterBody2D
     // Related to enemy UI
     private Control _uiControl;
     private Label _attackLabel;
+    private TextureProgressBar _attackTimer;
 
     // Method to signifiy that this is an enemy, DON'T DELETE
     public void IsEnemy() { }
+
+    public void DisplayEnemyUI(bool show)
+    {
+        DisplayAttackTimer(show);
+        if (show)
+        {
+            DisplayCurrentAttack(); 
+        }
+        else
+        {
+            HideCurrentAttack();
+        }
+    }
+
+    private void DisplayAttackTimer(bool show)
+    {
+        if (show)
+        {
+            _attackTimer.Visible = true;            
+        }
+        else
+        {
+            _attackTimer.Visible = false;            
+        }
+    }
 
     private void DisplayCurrentAttack()
     {
@@ -262,14 +288,14 @@ public partial class enemy : CharacterBody2D
         {
             _playerInAttackRange = true;
             Combat.Instance.CombatEntered(this);
-            DisplayCurrentAttack();
+            DisplayEnemyUI(true);
         }
     }
 
     private void _on_attack_range_body_exited(Node2D body)
     {
         Combat.Instance.CombatExited(this);
-        HideCurrentAttack();
+        DisplayEnemyUI(false);
 
         if (body == _player)
         {
@@ -295,8 +321,10 @@ public partial class enemy : CharacterBody2D
         _uiControl = GetNode<Control>("UIControl");
         if (_uiControl != null)
         {
-            _attackLabel = _uiControl.GetNode<Label>("AttackType");
-            HideCurrentAttack();
+            HBoxContainer hbox = _uiControl.GetNode<HBoxContainer>("HBoxContainer");
+            _attackLabel = hbox.GetNode<Label>("AttackType");
+            _attackTimer = hbox.GetNode<Control>("Control").GetNode<TextureProgressBar>("AttackTimer");
+            DisplayEnemyUI(false);
         }
 
         // Generate initial attack seq
