@@ -9,6 +9,12 @@ using System.Linq;
 public partial class enemy : CharacterBody2D
 {
     private slowableNode _slow;
+    public slowableNode SlowNode
+    {
+        get
+        { return _slow; }
+        private set {}
+    }
 
     public const float DefaultSpeed = 100.0f;
     public float Speed = DefaultSpeed;
@@ -30,9 +36,9 @@ public partial class enemy : CharacterBody2D
     private CollisionShape2D _attackRange;
 
     // Related to enemy UI
-    private Control _uiControl;
+    private EnemyUiControl _uiControl;
     private Label _attackLabel;
-    private TextureProgressBar _attackTimer;
+    private EnemyAttackTimer _attackTimer;
 
     // Method to signifiy that this is an enemy, DON'T DELETE
     public void IsEnemy() { }
@@ -125,20 +131,24 @@ public partial class enemy : CharacterBody2D
     public void _on_attack_sprite_2d_animation_finished()
     {
         // use custom timer for cooldown (to account for slowdown as well)
-        CustomTimer timer = new(_slow, cooldown);
-        AddChild(timer);
-        timer.CustomTimerTimeout += () =>
-        {
-            _isAttacking = false;
-            // Set next attack
-            _currentAttack = Combat.GetNextAttack(_attackSequence);
-            GD.Print("Next attack: " + _currentAttack.ToString());
+        //CustomTimer timer = new(_slow, cooldown);
+        //AddChild(timer);
+        //timer.CustomTimerTimeout += () =>
+        _attackTimer.RunTimer(cooldown);
+        GD.Print("Start Timer");
+    }
 
-            if (_currentAttack == Combat.AttackType.None)
-            {
-                _attackSprite.Visible = false;
-            }
-        };
+    private void OnAttackTimerTimeout()
+    {
+        _isAttacking = false;
+        // Set next attack
+        _currentAttack = Combat.GetNextAttack(_attackSequence);
+        GD.Print("Next attack: " + _currentAttack.ToString());
+
+        if (_currentAttack == Combat.AttackType.None)
+        {
+            _attackSprite.Visible = false;
+        }
     }
 
     private void MoveEnemy(double delta)
@@ -317,15 +327,15 @@ public partial class enemy : CharacterBody2D
         _attackZone = GetNode<Area2D>("AttackZone").GetChild<CollisionShape2D>(0);
         _attackRange = GetNode<Area2D>("AttackRange").GetChild<CollisionShape2D>(0);
 
-        // Get UI control and necessary child nodes
-        _uiControl = GetNode<Control>("UIControl");
-        if (_uiControl != null)
-        {
-            HBoxContainer hbox = _uiControl.GetNode<HBoxContainer>("HBoxContainer");
-            _attackLabel = hbox.GetNode<Label>("AttackType");
-            _attackTimer = hbox.GetNode<Control>("Control").GetNode<TextureProgressBar>("AttackTimer");
-            DisplayEnemyUI(false);
-        }
+        // get UI control and set necessary child nodes
+        _uiControl = GetNode<EnemyUiControl>("UIControl");
+        _attackLabel = _uiControl.AttackTypeLabel;
+        _attackTimer = _uiControl.AttackTimer;
+
+        // Subscribe to timer timeout
+        _attackTimer.AttackTimerTimeout += OnAttackTimerTimeout;
+
+        DisplayEnemyUI(false);
 
         // Generate initial attack seq
         _attackSequence = Combat.Instance.GenerateAttackSequence(6);

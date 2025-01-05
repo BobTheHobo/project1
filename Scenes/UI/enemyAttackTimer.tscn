@@ -1,13 +1,17 @@
-[gd_scene load_steps=2 format=3 uid="uid://cpcxs2lp5o34h"]
+[gd_scene load_steps=3 format=3 uid="uid://ct8k53bmuhqqu"]
 
-[ext_resource type="Texture2D" uid="uid://bkqsee07tyj23" path="res://Assets/progress.png" id="1_sw2c8"]
+[ext_resource type="Script" path="res://Scripts/EnemyAttackTimer.cs" id="2_75m7k"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_y1fku"]
+load_path = "res://.godot/imported/progress.png-53aaa27043351a86a1a41b7e5850d968.ctex"
 
 [node name="TextureProgressBar" type="TextureProgressBar"]
 offset_right = 32.0
 offset_bottom = 32.0
 scale = Vector2(0.25, 0.25)
 fill_mode = 4
-texture_under = ExtResource("1_sw2c8")
-texture_progress = ExtResource("1_sw2c8")
+texture_under = SubResource("CompressedTexture2D_y1fku")
+texture_progress = SubResource("CompressedTexture2D_y1fku")
 tint_under = Color(0.855469, 0.855469, 0.855469, 0.698039)
 tint_progress = Color(0.125, 1, 0, 1)
+script = ExtResource("2_75m7k")

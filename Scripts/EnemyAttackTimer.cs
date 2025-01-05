@@ -1,18 +1,30 @@
 using Godot;
 using System;
 
-public partial class EnemyAttackTimer : CustomTimer
+public partial class EnemyAttackTimer : TextureProgressBar
 {
 	private slowableNode _slow;
 	private CustomTimer _timer;
 	public double cooldown = 1f;
+	private double _scaledCooldown; // Will dynamically scale whenever cooldown changes because of slows/speedups
 	public double timeRemaining;
 	public float currentProgress;
 
 	[Signal]
 	public delegate void AttackTimerTimeoutEventHandler();
 
-	public EnemyAttackTimer(slowableNode slowable, double defaultCD) : base(slowable, defaultCD)
+	public EnemyAttackTimer()
+	{
+		_slow = null;
+	}
+
+	public EnemyAttackTimer(double defaultCD)
+	{
+		_slow = null;
+		cooldown = defaultCD;
+	}
+
+	public EnemyAttackTimer(slowableNode slowable, double defaultCD)
 	{
 		_slow = slowable;
 		cooldown = defaultCD;
@@ -28,7 +40,7 @@ public partial class EnemyAttackTimer : CustomTimer
 	{
 		_timer = new(_slow, time);
 		AddChild(_timer);
-		_timer.CustomTimerTimeout += OnTimerTimeout;
+		_timer.CustomTimerTimeout += OnAttackTimerTimeout;
 	}
 
 	public void Pause()
@@ -57,9 +69,8 @@ public partial class EnemyAttackTimer : CustomTimer
 		}
 	}
 
-	private void OnTimerTimeout()
+	private void OnAttackTimerTimeout()
 	{
-		GD.Print("Attack timer finished");
 		EmitSignal(SignalName.AttackTimerTimeout);
 		_timer = null; // CustomTimer will free itself after timeout
 	}
@@ -69,9 +80,22 @@ public partial class EnemyAttackTimer : CustomTimer
 		cooldown = cd;
 	}
 
-	public void GetProgressPercent()
+	public void UpdateProgress()
 	{
-			
+		if (_timer == null)
+		{
+			currentProgress = 0;
+		}	
+		else
+		{
+			currentProgress = _timer.PercentProgress;
+			Value = currentProgress;
+		}
+	}
+
+	public void SetSlowableNode(slowableNode slowNode)
+	{
+		_slow = slowNode;
 	}
 	
 	// Called when the node enters the scene tree for the first time.
@@ -82,5 +106,6 @@ public partial class EnemyAttackTimer : CustomTimer
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
+		UpdateProgress();
 	}
 }

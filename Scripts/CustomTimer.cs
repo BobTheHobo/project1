@@ -9,11 +9,16 @@ using System;
 public partial class CustomTimer : Timer
 {
 	private slowableNode _slowNode = null;
-	public double duration = 1;
-	private double adjustedDuration;
+	public double duration; // Duration should be unchanged regardless of slow factor
+	private double _scaledDuration; // Original duration scaled by whatever slow factor
 	private bool _useGlobalSlow = true;
-	private double _remainingTime;
 	private float previous_slow_factor;
+	public float PercentProgress {
+		get {
+			return CalculatePercentProgress();
+		}
+		private set {}
+	}
 
 	private Timer _timer;
 
@@ -30,7 +35,7 @@ public partial class CustomTimer : Timer
 		_timer.Timeout += OnTimerTimeout;
 
 		duration = reqDuration;
-		adjustedDuration = reqDuration;
+		double adjustedDuration = reqDuration;
 
 		if (slow != null) // Using local slow
 		{
@@ -54,6 +59,7 @@ public partial class CustomTimer : Timer
 		}
 
 		_timer.WaitTime = adjustedDuration;
+		_scaledDuration = adjustedDuration;
 	}	
 
 	private void HandleSlowmoChange(object sender, SlowmoController.SlowChangedEventArgs e)
@@ -63,7 +69,7 @@ public partial class CustomTimer : Timer
 			return;
 		}
 
-		_remainingTime = _timer.TimeLeft;
+		double remainingTime = _timer.TimeLeft;
 		_timer.Stop();
 
 		//GD.Print("Stopping timer at: " + _remainingTime.ToString());
@@ -73,7 +79,11 @@ public partial class CustomTimer : Timer
 
 		// Need to redo affects of previous slow factor and then apply 
 		// current scale factor or else it'll just apply the slow twice
-		_timer.WaitTime = _remainingTime * e.PreviousSlowFactor / e.CurrentSlowFactor;
+		double newRemainingTime = remainingTime * e.PreviousSlowFactor / e.CurrentSlowFactor;
+		_timer.WaitTime = newRemainingTime;
+
+		// Calculate scaled duration and percent progress
+		_scaledDuration = duration * 1.0/e.CurrentSlowFactor; // Duration should be unchanged upon slow so no need to account for previous slow factor
 
 		//GD.Print("New time after slow change: " + _timer.WaitTime.ToString());
 
@@ -83,11 +93,21 @@ public partial class CustomTimer : Timer
 	public void OnTimerTimeout()
 	{
 		_timer.Stop();
-		GD.Print("Timer finished");
 		EmitSignal(SignalName.CustomTimerTimeout);
 
 		// Remove this timer after it's used
 		QueueFree();
+	}
+
+	private float CalculatePercentProgress()
+	{
+		if (_timer != null)
+		{
+			double remainingTime = _timer.TimeLeft; // TimeLeft should already be scaled by HandleSlowmoChange
+			//GD.Print(remainingTime.ToString() + "/" + _scaledDuration.ToString());
+			return (float)(remainingTime / _scaledDuration) * 100;
+		}
+		return 0;
 	}
 
 	// Called when the node enters the scene tree for the first time.
