@@ -1,9 +1,10 @@
-[gd_scene load_steps=27 format=3 uid="uid://dj3fdpeiw6km0"]
+[gd_scene load_steps=28 format=3 uid="uid://dj3fdpeiw6km0"]
 
 [ext_resource type="Script" path="res://Scripts/enemy.cs" id="1_hkrnh"]
 [ext_resource type="Texture2D" uid="uid://cd4x4fkq0lt83" path="res://brackeys_platformer_assets/brackeys_platformer_assets/sprites/slime_green.png" id="2_qdlvr"]
 [ext_resource type="Texture2D" uid="uid://c1oks081qit2a" path="res://Assets/attacks-Sheet.png" id="3_5mi24"]
 [ext_resource type="PackedScene" uid="uid://bui4du27d1y0y" path="res://Scenes/UI/enemy_ui_control.tscn" id="4_3vqe2"]
+[ext_resource type="Script" path="res://Scripts/Hurtbox.cs" id="4_pshf8"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7kxpm"]
 atlas = ExtResource("2_qdlvr")
@@ -198,11 +199,11 @@ shape = SubResource("RectangleShape2D_4nw6y")
 [node name="DamageZone" type="CollisionShape2D" parent="AttackZone"]
 position = Vector2(12, -10)
 shape = SubResource("RectangleShape2D_or0gv")
-disabled = true
 
-[node name="EnemyHitbox" type="Area2D" parent="."]
+[node name="EnemyHurtbox" type="Area2D" parent="."]
+script = ExtResource("4_pshf8")
 
-[node name="HitboxCollisionShape" type="CollisionShape2D" parent="EnemyHitbox"]
+[node name="HurtboxCollisionShape" type="CollisionShape2D" parent="EnemyHurtbox"]
 position = Vector2(-0.5, -9.5)
 shape = SubResource("RectangleShape2D_m8clk")
 

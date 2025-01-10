@@ -22,4 +22,7 @@ public partial class SignalBus : Node
     // Combat UI signals
     [Signal]
     public delegate void ShowEnemyInRangeUIEventHandler(bool show);
+
+    [Signal]
+    public delegate void PlayerHitEnemyEventHandler(Node2D enemy);
 }

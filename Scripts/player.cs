@@ -1,11 +1,15 @@
 using Godot;
 using System;
+using System.Linq;
+using System.Net.Mail;
 
 public partial class player : CharacterBody2D
 {
     private slowableNode _slow; 
     public int health = 100;
     public bool player_alive = true;
+    private bool _enemyInAttackRange;
+    public int damage = 1;
 
     public Vector2 Gravity;
     public const float DefaultSpeed = 200.0f;
@@ -13,12 +17,13 @@ public partial class player : CharacterBody2D
     public const float DefaultJumpVelocity = -300.0f;
     public float JumpVelocity = DefaultJumpVelocity;
 
-    public string Attack_Type;
+    public Combat.AttackType Attack_Type;
     public bool current_attack = false;
 
     public AnimatedSprite2D animatedSprite;
     private AnimatedSprite2D attackSprite;
-    public CollisionShape2D attackZone;
+    public Hitbox attackHitbox;
+    public CollisionShape2D attackHitboxColShape;
 
     public int direction_facing = 1; //1 is right, -1 is left
 
@@ -94,9 +99,9 @@ public partial class player : CharacterBody2D
             animatedSprite.FlipH = true;
 
             // Flip attack zone
-            Vector2 position = attackZone.Position;
+            Vector2 position = attackHitboxColShape.Position;
             position.X = -Math.Abs(position.X);
-            attackZone.Set("position", position);
+            attackHitboxColShape.Set("position", position);
         }
         else
         {
@@ -110,9 +115,9 @@ public partial class player : CharacterBody2D
             animatedSprite.FlipH = false;
 
             // Flip attack zone
-            Vector2 position = attackZone.Position;
+            Vector2 position = attackHitboxColShape.Position;
             position.X = Math.Abs(position.X);
-            attackZone.Set("position", position);
+            attackHitboxColShape.Set("position", position);
         }
 
         // Set player velocity
@@ -132,18 +137,35 @@ public partial class player : CharacterBody2D
         }
     }
 
-    public void _Attack_Animation(string Attack_Type)
+    public void _Attack_Animation(Combat.AttackType attack)
     {
         if (current_attack)
         {
-            if (Attack_Type == "Basic Attack" || Attack_Type =="Heavy Attack" || Attack_Type == "Special Attack")
+            attackSprite.Visible = true;
+            //((CanvasItem)attackSprite).SetVisible(true);
+
+            // GD.Print("Animation start");
+            attackSprite.SetVisible(true);
+            attackSprite.Play(attack.ToString());
+        }
+    }
+
+    public void HandleAttacks(Combat.AttackType attack)
+    {
+        if (current_attack)
+        {
+            foreach (Hurtbox hurtbox in attackHitbox.hurtboxes)
             {
-                attackSprite.Visible = true;
-                //((CanvasItem)attackSprite).SetVisible(true);
-                
-                // GD.Print("Animation start");
-                attackSprite.SetVisible(true);
-                attackSprite.Play(Attack_Type);
+                GD.Print("Hurting " + hurtbox.Name);
+
+                // Animation
+                _Attack_Animation(attack);
+
+                // Handle damage
+                if (hurtbox.Owner.HasMethod("HandleDamage"))
+                {
+                    hurtbox.Owner.Call("HandleDamage", damage);
+                }
             }
         }
     }
@@ -174,6 +196,28 @@ public partial class player : CharacterBody2D
         }
     }
 
+    public void OnAttackHitboxEntered(Node2D body)
+    {
+        if (body.HasMethod("IsEnemy"))
+        {
+            _enemyInAttackRange = true;
+
+            SignalBus.Instance.EmitSignal(SignalBus.SignalName.PlayerHitEnemy, body);
+        }
+    }
+
+    public void OnAttackHitboxExited(Node2D body)
+    {
+        if (body.HasMethod("IsEnemy"))
+        {
+            if (!attackHitbox.hurtboxes.Any())
+            {
+                _enemyInAttackRange = false;
+            }
+            SignalBus.Instance.EmitSignal(SignalBus.SignalName.PlayerHitEnemy, body);
+        }
+    }
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
@@ -183,10 +227,26 @@ public partial class player : CharacterBody2D
 
         animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         attackSprite = GetNode<AnimatedSprite2D>("AttackSprite2D");
-        attackZone = GetNode<Area2D>("AttackZone").GetChild<CollisionShape2D>(0);
+        //attackHitbox = GetNode<Area2D>("AttackHitbox").GetChild<CollisionShape2D>(0);
+        attackHitbox = (Hitbox) GetNode<Area2D>("AttackHitbox");
+
+        // This is different from areaentered and exit
+        attackHitbox.BodyEntered += OnAttackHitboxEntered;
+        attackHitbox.BodyExited += OnAttackHitboxExited;
+
+        attackHitboxColShape = (CollisionShape2D) attackHitbox.GetChild(0);
 
         // Subscribe to slowmo event
         SlowmoController.GlobalSlowChanged += HandleSlowmoChange;
+    }
+
+    public override void _ExitTree()
+    {
+        base._ExitTree();
+        // Not sure I need to disconnect these b/c they're godot signals,
+        // but good practice i guess
+        attackHitbox.AreaEntered -= OnAttackHitboxEntered; 
+        attackHitbox.AreaExited -= OnAttackHitboxExited; 
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -203,22 +263,22 @@ public partial class player : CharacterBody2D
         if (@event.IsActionPressed("Basic Attack"))
         { 
             current_attack = true;
-            Attack_Type = "Basic Attack";
-            _Attack_Animation(Attack_Type);
+            Attack_Type = Combat.AttackType.Light;
+            HandleAttacks(Attack_Type);
         }
 
         if (@event.IsActionPressed("Heavy Attack"))
         {
             current_attack = true;
-            Attack_Type = "Heavy Attack";
-            _Attack_Animation(Attack_Type);
+            Attack_Type = Combat.AttackType.Heavy;
+            HandleAttacks(Attack_Type);
         }
 
         if (@event.IsActionPressed("Special Attack"))
         {
             current_attack = true;
-            Attack_Type = "Special Attack";
-            _Attack_Animation(Attack_Type);
+            Attack_Type = Combat.AttackType.Special;
+            HandleAttacks(Attack_Type);
         }
     }
 }

@@ -30,7 +30,6 @@ public partial class slowableNode : Node
 	{
 		_parentObj = parentObj;
 		_controller.GlobalSlowChanged += HandleSlowChange;
-		GD.Print("added");
 	}
 
 	// This will only run if the slowableNode is ADDED TO THE SCENE 

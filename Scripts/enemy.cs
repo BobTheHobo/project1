@@ -8,6 +8,8 @@ using System.Linq;
 
 public partial class enemy : CharacterBody2D
 {
+    [Export]
+    public int health = 10;
     private slowableNode _slow;
     public slowableNode SlowNode
     {
@@ -70,7 +72,7 @@ public partial class enemy : CharacterBody2D
 
     private void DisplayCurrentAttack()
     {
-        GD.Print("Current enemy attack: " + Combat.GetAttackString(_currentAttack));
+        //GD.Print("Current enemy attack: " + Combat.GetAttackString(_currentAttack));
 
         // Overwrites whatever text is currently there
         //string newText = _currentAttack.ToString();
@@ -105,11 +107,22 @@ public partial class enemy : CharacterBody2D
         }
     }
 
+    public void HandleDamage(int amount)
+    {
+        GD.Print("enemy was struck for " + amount + " damage.");
+        health -= amount;
+        if (health <= 0)
+        {
+            QueueFree();    
+        }
+    }
+
     // Plays animations and handles attacks
     private void HandleAttacks()
     {
         if (!_isAttacking && _currentAttack != Combat.AttackType.None)
         {
+            _attackTimer.RunTimer(cooldown);
             _isAttacking = true;
             switch (_currentAttack)
             {
@@ -131,11 +144,8 @@ public partial class enemy : CharacterBody2D
     public void _on_attack_sprite_2d_animation_finished()
     {
         // use custom timer for cooldown (to account for slowdown as well)
-        //CustomTimer timer = new(_slow, cooldown);
-        //AddChild(timer);
-        //timer.CustomTimerTimeout += () =>
-        _attackTimer.RunTimer(cooldown);
-        GD.Print("Start Timer");
+        // _attackTimer.RunTimer(cooldown);
+        // GD.Print("Start Timer");
     }
 
     private void OnAttackTimerTimeout()
@@ -143,7 +153,7 @@ public partial class enemy : CharacterBody2D
         _isAttacking = false;
         // Set next attack
         _currentAttack = Combat.GetNextAttack(_attackSequence);
-        GD.Print("Next attack: " + _currentAttack.ToString());
+        //GD.Print("Next attack: " + _currentAttack.ToString());
 
         if (_currentAttack == Combat.AttackType.None)
         {
@@ -348,5 +358,12 @@ public partial class enemy : CharacterBody2D
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta)
     {
+    }
+
+    public override void _ExitTree()
+    {
+        base._ExitTree();
+        // Need to remove listener b/c custom signal
+        SlowmoController.GlobalSlowChanged -= HandleSlowmoChange; 
     }
 }

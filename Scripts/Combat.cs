@@ -304,9 +304,6 @@ public partial class Combat : Node2D
     // Displays current enemy attack and slows down the game
     public void CombatEntered(Node2D enemyInCombat)
     {
-        // TODO: display enemy attack
-        // GD.Print("Combat entered with " + enemyInCombat.Name);            
-            // SlowmoController.GlobalSlowmoOn(); // Turns on slowmo
         _isInEnemyRange = true;
         _enemiesWithPlayerInAttackRange.Add(enemyInCombat);
         HandleCombatSlowmo();
