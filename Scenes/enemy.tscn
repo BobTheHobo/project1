@@ -1,9 +1,10 @@
-[gd_scene load_steps=28 format=3 uid="uid://dj3fdpeiw6km0"]
+[gd_scene load_steps=29 format=3 uid="uid://dj3fdpeiw6km0"]
 
 [ext_resource type="Script" path="res://Scripts/enemy.cs" id="1_hkrnh"]
 [ext_resource type="Texture2D" uid="uid://cd4x4fkq0lt83" path="res://brackeys_platformer_assets/brackeys_platformer_assets/sprites/slime_green.png" id="2_qdlvr"]
 [ext_resource type="Texture2D" uid="uid://c1oks081qit2a" path="res://Assets/attacks-Sheet.png" id="3_5mi24"]
 [ext_resource type="PackedScene" uid="uid://bui4du27d1y0y" path="res://Scenes/UI/enemy_ui_control.tscn" id="4_3vqe2"]
+[ext_resource type="Script" path="res://Scripts/Hitbox.cs" id="4_bfswc"]
 [ext_resource type="Script" path="res://Scripts/Hurtbox.cs" id="4_pshf8"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7kxpm"]
@@ -162,7 +163,7 @@ animations = [{
 size = Vector2(13, 13)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_or0gv"]
-size = Vector2(12, 8)
+size = Vector2(28, 13)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_m8clk"]
 size = Vector2(17, 15)
@@ -194,10 +195,11 @@ offset = Vector2(6, -11)
 position = Vector2(-0.5, -8.5)
 shape = SubResource("RectangleShape2D_4nw6y")
 
-[node name="AttackZone" type="Area2D" parent="."]
+[node name="AttackHitbox" type="Area2D" parent="."]
+script = ExtResource("4_bfswc")
 
-[node name="DamageZone" type="CollisionShape2D" parent="AttackZone"]
-position = Vector2(12, -10)
+[node name="DamageZone" type="CollisionShape2D" parent="AttackHitbox"]
+position = Vector2(20, -9)
 shape = SubResource("RectangleShape2D_or0gv")
 
 [node name="EnemyHurtbox" type="Area2D" parent="."]
@@ -222,6 +224,10 @@ position = Vector2(7.7, -10)
 shape = SubResource("RectangleShape2D_2oyq6")
 
 [node name="UIControl" parent="." instance=ExtResource("4_3vqe2")]
+offset_left = -42.0
+offset_top = -40.0
+offset_right = 8.0
+offset_bottom = -30.0
 
 [connection signal="animation_finished" from="AttackSprite2D" to="." method="_on_attack_sprite_2d_animation_finished"]
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]

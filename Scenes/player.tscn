@@ -305,7 +305,9 @@ autoplay = "Idle"
 z_index = 1
 position = Vector2(0, 3)
 sprite_frames = SubResource("SpriteFrames_1tmcn")
-animation = &"Special"
+animation = &"Light"
+frame = 2
+frame_progress = 1.0
 offset = Vector2(6, -11)
 
 [node name="SpriteCollisionShape" type="CollisionShape2D" parent="."]
@@ -334,6 +336,7 @@ position = Vector2(0, -10)
 shape = SubResource("CircleShape2D_u43aa")
 
 [node name="UIControl" type="Control" parent="."]
+visible = false
 z_index = 2
 layout_mode = 3
 anchors_preset = 0

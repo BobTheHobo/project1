@@ -10,6 +10,8 @@ public partial class enemy : CharacterBody2D
 {
     [Export]
     public int health = 10;
+    [Export]
+    public int damage = 1;
     private slowableNode _slow;
     public slowableNode SlowNode
     {
@@ -25,7 +27,8 @@ public partial class enemy : CharacterBody2D
     private Vector2 _gravity;
     private bool _playerChase = false;
     private Node2D _player = null; // target player
-    private bool _playerInAttackRange = false; //if player is in attack range
+    private bool _playerInAttackRange = false; //if player is in attackable range
+    private bool _playerInAttackHitbox = false; //if player is in actual hitbox
     private int _direction = 1;
     private Random _rng = new Random();
     private Stack<Combat.AttackType> _attackSequence;
@@ -34,12 +37,14 @@ public partial class enemy : CharacterBody2D
     private float cooldown = 1; // Cooldown between attacks
     private AnimatedSprite2D _sprite;
     private AnimatedSprite2D _attackSprite;
-    private CollisionShape2D _attackZone;
+    private Hitbox _attackHitbox;
+    private CollisionShape2D _attackHitboxColShape;
     private CollisionShape2D _attackRange;
 
     // Related to enemy UI
     private EnemyUiControl _uiControl;
     private Label _attackLabel;
+    private Label _healthLabel;
     private EnemyAttackTimer _attackTimer;
 
     // Method to signifiy that this is an enemy, DON'T DELETE
@@ -50,11 +55,13 @@ public partial class enemy : CharacterBody2D
         DisplayAttackTimer(show);
         if (show)
         {
-            DisplayCurrentAttack(); 
+            DisplayCurrentAttack();
+            _healthLabel.Visible = true;
         }
         else
         {
             HideCurrentAttack();
+            _healthLabel.Visible = false;
         }
     }
 
@@ -87,6 +94,12 @@ public partial class enemy : CharacterBody2D
         string newText = "Attack: " + _currentAttack.ToString();
         _attackLabel.SetText(newText);
     }
+
+    private void UpdateHealthDisplay()
+    {
+        string newText = "Health: " + health.ToString();
+        _healthLabel.SetText(newText);
+    }
     
     private void HideCurrentAttack()
     {
@@ -109,8 +122,9 @@ public partial class enemy : CharacterBody2D
 
     public void HandleDamage(int amount)
     {
-        GD.Print("enemy was struck for " + amount + " damage.");
         health -= amount;
+        UpdateHealthDisplay();
+
         if (health <= 0)
         {
             QueueFree();    
@@ -150,6 +164,17 @@ public partial class enemy : CharacterBody2D
 
     private void OnAttackTimerTimeout()
     {
+        foreach (Hurtbox hurtbox in _attackHitbox.hurtboxes)
+        {
+            GD.Print("Enemy is hurting " + hurtbox.Name);
+
+            // Handle damage
+            if (hurtbox.Owner.HasMethod("HandleDamage"))
+            {
+                hurtbox.Owner.Call("HandleDamage", damage);
+            }
+        }
+
         _isAttacking = false;
         // Set next attack
         _currentAttack = Combat.GetNextAttack(_attackSequence);
@@ -191,7 +216,7 @@ public partial class enemy : CharacterBody2D
         {
             direction_facing = -1;
 
-            FlipShape(_attackZone, -1);
+            FlipShape(_attackHitboxColShape, -1);
             FlipShape(_attackRange, -1);
             FlipSprite(_attackSprite, -1);
             FlipSprite(_sprite, -1);
@@ -200,7 +225,7 @@ public partial class enemy : CharacterBody2D
         {
             direction_facing = 1;
 
-            FlipShape(_attackZone, 1);
+            FlipShape(_attackHitboxColShape, 1);
             FlipShape(_attackRange, 1);
             FlipSprite(_attackSprite, 1);
             FlipSprite(_sprite, 1);
@@ -324,6 +349,22 @@ public partial class enemy : CharacterBody2D
         }
     }
 
+    public void OnAttackHitboxEntered(Node2D body)
+    {
+        if (body.HasMethod("IsPlayer"))
+        {
+            _playerInAttackHitbox = true;
+        }
+    }
+
+    public void OnAttackHitboxExited(Node2D body)
+    {
+        if (body.HasMethod("IsPlayer"))
+        {
+            _playerInAttackHitbox = false;
+        }
+    }
+
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
@@ -334,13 +375,21 @@ public partial class enemy : CharacterBody2D
         // Get sprites
         _sprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         _attackSprite = GetNode<AnimatedSprite2D>("AttackSprite2D");
-        _attackZone = GetNode<Area2D>("AttackZone").GetChild<CollisionShape2D>(0);
         _attackRange = GetNode<Area2D>("AttackRange").GetChild<CollisionShape2D>(0);
+        _attackHitbox = (Hitbox) GetNode<Area2D>("AttackHitbox");
+        _attackHitboxColShape = (CollisionShape2D) _attackHitbox.GetChild(0);
+
+        // Subscribe to hitbox/hurtbox interaction
+        _attackHitbox.BodyEntered += OnAttackHitboxEntered;
+        _attackHitbox.BodyExited += OnAttackHitboxExited;
 
         // get UI control and set necessary child nodes
         _uiControl = GetNode<EnemyUiControl>("UIControl");
         _attackLabel = _uiControl.AttackTypeLabel;
         _attackTimer = _uiControl.AttackTimer;
+        _healthLabel = _uiControl.HealthLabel;
+
+        UpdateHealthDisplay();
 
         // Subscribe to timer timeout
         _attackTimer.AttackTimerTimeout += OnAttackTimerTimeout;
@@ -362,8 +411,10 @@ public partial class enemy : CharacterBody2D
 
     public override void _ExitTree()
     {
-        base._ExitTree();
-        // Need to remove listener b/c custom signal
+        // Need to remove listeners b/c custom signal
         SlowmoController.GlobalSlowChanged -= HandleSlowmoChange; 
+        _attackTimer.AttackTimerTimeout -= OnAttackTimerTimeout;
+
+        base._ExitTree();
     }
 }

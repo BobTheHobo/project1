@@ -28,7 +28,7 @@ public partial class player : CharacterBody2D
     public int direction_facing = 1; //1 is right, -1 is left
 
     // Method specifies that this is a player DO NOT REMOVE
-    public void isPlayer()
+    public void IsPlayer()
     {
     }
 
@@ -139,6 +139,7 @@ public partial class player : CharacterBody2D
 
     public void _Attack_Animation(Combat.AttackType attack)
     {
+        // GD.Print("Playing " + attack.ToString());
         if (current_attack)
         {
             attackSprite.Visible = true;
@@ -154,12 +155,12 @@ public partial class player : CharacterBody2D
     {
         if (current_attack)
         {
+            // Animation
+            _Attack_Animation(attack);
+
             foreach (Hurtbox hurtbox in attackHitbox.hurtboxes)
             {
                 GD.Print("Hurting " + hurtbox.Name);
-
-                // Animation
-                _Attack_Animation(attack);
 
                 // Handle damage
                 if (hurtbox.Owner.HasMethod("HandleDamage"))
@@ -167,6 +168,16 @@ public partial class player : CharacterBody2D
                     hurtbox.Owner.Call("HandleDamage", damage);
                 }
             }
+        }
+    }
+
+    public void HandleDamage(int amount)
+    {
+        health -= amount;
+
+        if (health <= 0)
+        {
+            GD.Print("Player ded");
         }
     }
 
@@ -227,7 +238,6 @@ public partial class player : CharacterBody2D
 
         animatedSprite = GetNode<AnimatedSprite2D>("AnimatedSprite2D");
         attackSprite = GetNode<AnimatedSprite2D>("AttackSprite2D");
-        //attackHitbox = GetNode<Area2D>("AttackHitbox").GetChild<CollisionShape2D>(0);
         attackHitbox = (Hitbox) GetNode<Area2D>("AttackHitbox");
 
         // This is different from areaentered and exit

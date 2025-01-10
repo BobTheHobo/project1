@@ -9,6 +9,4 @@ public partial class Hurtbox : Area2D
 		CollisionLayer = 3;
 		CollisionMask = 0; // Don't touch anything else
     }
-
-    
 }
