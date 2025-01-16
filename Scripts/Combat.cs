@@ -182,10 +182,13 @@ public partial class Combat : Node2D
         // TODO: might have to find out a way to prioritize if multiple enemies are the same distance away for now it just takes whichever is found first
         foreach (enemy en in Main.GetEnemies())
         {
-            float dist = pos.DistanceSquaredTo(en.GlobalPosition);
-            if (dist < closestDist) {
-                closestEnemy = en;
-                closestDist = dist;
+            if (en != null)
+            {
+                float dist = pos.DistanceSquaredTo(en.GlobalPosition);
+                if (dist < closestDist) {
+                    closestEnemy = en;
+                    closestDist = dist;
+                }
             }
         }
         return closestEnemy;

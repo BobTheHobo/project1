@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
@@ -415,6 +416,7 @@ public partial class enemy : CharacterBody2D
         SlowmoController.GlobalSlowChanged -= HandleSlowmoChange; 
         _attackTimer.AttackTimerTimeout -= OnAttackTimerTimeout;
 
+        Main.RemoveEnemy(this);
         base._ExitTree();
     }
 }

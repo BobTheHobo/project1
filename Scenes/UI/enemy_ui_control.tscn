@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://ct8k53bmuhqqu" path="res://Scenes/UI/enemyAttackTimer.tscn" id="1_75i1t"]
 [ext_resource type="Script" path="res://Scripts/EnemyUiControl.cs" id="1_iov4u"]
 [ext_resource type="Texture2D" uid="uid://bgijp1s7mfhix" path="res://Assets/progress.png" id="3_x8gyl"]
-[ext_resource type="Theme" uid="uid://cu453d6sru5v0" path="res://DefaultTheme.tres" id="4_3bq2o"]
+[ext_resource type="Theme" path="res://DefaultTheme.tres" id="4_3bq2o"]
 
 [node name="UIControl" type="Control"]
 z_index = 1
