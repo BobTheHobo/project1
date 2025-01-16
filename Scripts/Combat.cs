@@ -269,7 +269,7 @@ public partial class Combat : Node2D
     // Attempts to remove lockonui from its parent
     private void removeLockOnUi()
     {
-        if (lockOnUi.GetParentOrNull<Node>() != null)
+        if (IsInstanceValid(lockOnUi) && lockOnUi.GetParentOrNull<Node>() != null)
         {
             lockOnUi.GetParent().RemoveChild(lockOnUi);
         }
@@ -279,6 +279,7 @@ public partial class Combat : Node2D
     private void attachLockOnUi(Node2D target) {
         // Remove from existing parent, if any
         removeLockOnUi();
+
         CollisionShape2D targetColShape = target.GetNodeOrNull<CollisionShape2D>("SpriteCollisionShape");
         // If target has a collision shape add it to that b/c it'll be more centered than using the actual object origin
         if (targetColShape != null)

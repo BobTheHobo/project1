@@ -23,7 +23,7 @@ public partial class LockonUi : Node2D
 		time += delta;
 		if (time >= rotateInterval) {
 			time = 0;
-			this.RotationDegrees += 45;
+			RotationDegrees += 45;
 		}
 	}
 }

@@ -52,6 +52,7 @@ public partial class Main : Node
         GD.Print("Enemy added to global list: " + enmy);
     }
 
+    // Removes enemy from list
     public static void RemoveEnemy(enemy enmy)
     {
         _enemies.Remove(enmy);

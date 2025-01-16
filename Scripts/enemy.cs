@@ -139,18 +139,6 @@ public partial class enemy : CharacterBody2D
         {
             _attackTimer.RunTimer(cooldown);
             _isAttacking = true;
-            switch (_currentAttack)
-            {
-                case Combat.AttackType.Light:
-                    _attackSprite.Play("Basic Attack");
-                    break;
-                case Combat.AttackType.Heavy:
-                    _attackSprite.Play("Heavy Attack");
-                    break;
-                case Combat.AttackType.Special:
-                    _attackSprite.Play("Special Attack");
-                    break;
-            }
         }
         UpdateAttackDisplay();
     }
@@ -165,6 +153,7 @@ public partial class enemy : CharacterBody2D
 
     private void OnAttackTimerTimeout()
     {
+        // Hurt all hurtboxes in hitbox
         foreach (Hurtbox hurtbox in _attackHitbox.hurtboxes)
         {
             GD.Print("Enemy is hurting " + hurtbox.Name);
@@ -174,6 +163,20 @@ public partial class enemy : CharacterBody2D
             {
                 hurtbox.Owner.Call("HandleDamage", damage);
             }
+        }
+
+        // Play Animations
+        switch (_currentAttack)
+        {
+            case Combat.AttackType.Light:
+                _attackSprite.Play("Basic Attack");
+                break;
+            case Combat.AttackType.Heavy:
+                _attackSprite.Play("Heavy Attack");
+                break;
+            case Combat.AttackType.Special:
+                _attackSprite.Play("Special Attack");
+                break;
         }
 
         _isAttacking = false;
@@ -415,6 +418,13 @@ public partial class enemy : CharacterBody2D
         // Need to remove listeners b/c custom signal
         SlowmoController.GlobalSlowChanged -= HandleSlowmoChange; 
         _attackTimer.AttackTimerTimeout -= OnAttackTimerTimeout;
+        
+        LockonUi lockonui = GetNodeOrNull<LockonUi>("./LockonUi");
+        if (lockonui != null)
+        {
+            GD.Print("removed this critical object");
+            RemoveChild(lockonui); // unparent lockonui to prevent it from being deleted along with this
+        }
 
         Main.RemoveEnemy(this);
         base._ExitTree();
